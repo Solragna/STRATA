@@ -277,6 +277,82 @@ footer .col h4{color:var(--bone);font-size:13px;text-transform:uppercase;letter-
   .wrap{padding:0 20px;}
   .detail-grid{grid-template-columns:1fr;}
 }
+
+/* ---------- AI CHAT ---------- */
+#ai-chat-btn{
+  position:fixed;bottom:32px;right:32px;z-index:200;
+  width:54px;height:54px;background:var(--verdigris);border:none;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.06em;
+  color:var(--obsidian);box-shadow:0 4px 24px rgba(79,156,134,0.4);
+  transition:background .2s,transform .15s,box-shadow .2s;
+}
+#ai-chat-btn:hover{background:#62b19a;transform:scale(1.06);box-shadow:0 6px 30px rgba(79,156,134,0.55);}
+#ai-chat-btn.open{background:var(--molten);box-shadow:0 4px 24px rgba(232,162,61,0.4);}
+#ai-chat-btn svg{width:22px;height:22px;fill:var(--obsidian);}
+
+#ai-chat-panel{
+  position:fixed;bottom:102px;right:32px;z-index:199;
+  width:440px;max-width:calc(100vw - 48px);
+  background:var(--graphite2);border:1px solid var(--hairline);
+  display:flex;flex-direction:column;max-height:580px;
+  box-shadow:0 12px 48px rgba(0,0,0,0.6);
+  transform:translateY(16px) scale(0.97);opacity:0;pointer-events:none;
+  transition:transform .22s ease,opacity .22s ease;
+}
+#ai-chat-panel.show{transform:translateY(0) scale(1);opacity:1;pointer-events:all;}
+
+.ai-panel-header{
+  padding:14px 18px;border-bottom:1px solid var(--hairline);
+  display:flex;justify-content:space-between;align-items:center;flex-shrink:0;
+}
+.ai-panel-title{font-family:'Space Mono',monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--verdigris);}
+.ai-panel-ctx{font-family:'Space Mono',monospace;font-size:9.5px;color:var(--bone-dim);margin-top:2px;}
+.ai-panel-close{font-family:'Space Mono',monospace;font-size:12px;color:var(--bone-dim);cursor:pointer;flex-shrink:0;}
+.ai-panel-close:hover{color:var(--bone);}
+
+#ai-messages{
+  flex:1;overflow-y:auto;padding:16px 18px;display:flex;flex-direction:column;gap:10px;min-height:120px;
+}
+.ai-msg{max-width:90%;line-height:1.58;font-size:13.5px;}
+.ai-msg.user{
+  align-self:flex-end;background:rgba(79,156,134,0.13);
+  border:1px solid rgba(79,156,134,0.28);padding:10px 14px;color:var(--bone);
+}
+.ai-msg.model{
+  align-self:flex-start;background:var(--graphite);
+  border:1px solid var(--hairline);padding:10px 14px;color:var(--bone);
+}
+.ai-msg.error{
+  align-self:flex-start;background:rgba(193,90,60,0.1);
+  border:1px solid var(--rust);padding:10px 14px;color:var(--bone-dim);font-size:12.5px;
+}
+.ai-typing{align-self:flex-start;color:var(--bone-dim);font-family:'Space Mono',monospace;font-size:12px;padding:4px 0;letter-spacing:.06em;}
+
+.ai-panel-chips{
+  padding:10px 18px;display:flex;flex-wrap:wrap;gap:6px;border-top:1px solid var(--hairline);flex-shrink:0;
+}
+.ai-chip{
+  font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.03em;
+  padding:5px 11px;border:1px solid var(--hairline);color:var(--bone-dim);
+  cursor:pointer;background:var(--graphite);transition:all .15s;text-align:left;
+}
+.ai-chip:hover{border-color:var(--verdigris);color:var(--verdigris);}
+
+.ai-panel-input-row{display:flex;border-top:1px solid var(--hairline);flex-shrink:0;}
+#ai-input{
+  flex:1;background:transparent;border:none;color:var(--bone);
+  font-family:'Inter',sans-serif;font-size:13.5px;padding:13px 16px;outline:none;
+}
+#ai-input::placeholder{color:var(--bone-dim);}
+#ai-send{
+  padding:13px 18px;background:transparent;border:none;border-left:1px solid var(--hairline);
+  color:var(--verdigris);font-family:'Space Mono',monospace;font-size:11.5px;letter-spacing:.04em;
+  cursor:pointer;transition:background .15s,color .15s;flex-shrink:0;
+}
+#ai-send:hover{background:var(--verdigris);color:var(--obsidian);}
+#ai-send:disabled{opacity:0.35;cursor:not-allowed;}
+#ai-send:disabled:hover{background:transparent;color:var(--verdigris);}
 </style>
 </head>
 <body>
@@ -405,6 +481,34 @@ footer .col h4{color:var(--bone);font-size:13px;text-transform:uppercase;letter-
     </div>
   </div>
 </footer>
+
+<!-- AI CHAT -->
+<button id="ai-chat-btn" title="STRATA AI — ask anything about materials & composites">
+  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.03 2 11c0 2.64 1.18 5.01 3.07 6.69L4 22l4.5-1.5C9.59 21.47 10.78 22 12 22c5.52 0 10-4.03 10-9s-4.48-9-10-9zm1 13H7v-2h6v2zm2-4H7V9h8v2z"/></svg>
+</button>
+<div id="ai-chat-panel">
+  <div class="ai-panel-header">
+    <div>
+      <div class="ai-panel-title">STRATA AI — Materials Assistant</div>
+      <div class="ai-panel-ctx" id="ai-ctx-label">Reads your current Forge state</div>
+    </div>
+    <span class="ai-panel-close" id="ai-close">CLOSE ✕</span>
+  </div>
+  <div id="ai-messages">
+    <div class="ai-msg model">Hello — I'm the STRATA AI. Tell me what you need your composite to do (structural load, service environment, weight target, temperature, cost) and I'll suggest the best matrix, reinforcement, and hardener from the database. You can also ask about any material or property shown on this page, or have me explain what the Forge's computed numbers mean for your application.</div>
+  </div>
+  <div class="ai-panel-chips" id="ai-chips">
+    <button class="ai-chip" data-q="Suggest a lightweight stiff composite for an aerospace structural bracket">Aerospace bracket — light + stiff</button>
+    <button class="ai-chip" data-q="What matrix and reinforcement works best for a marine boat hull exposed to seawater?">Marine boat hull</button>
+    <button class="ai-chip" data-q="I need a composite that can survive above 400°C continuously — what are my options?">Survive > 400°C</button>
+    <button class="ai-chip" data-q="Explain the difference between the Halpin-Tsai and rule of mixtures models — when should I use each?">Halpin-Tsai vs ROM</button>
+    <button class="ai-chip" data-q="Analyse my current Forge build and tell me its strengths, weaknesses, and what I could improve">Analyse my current build</button>
+  </div>
+  <div class="ai-panel-input-row">
+    <input id="ai-input" type="text" placeholder="Ask about materials, suggest a composite, explain a property…" autocomplete="off">
+    <button id="ai-send">SEND</button>
+  </div>
+</div>
 
 <div id="detail-overlay">
   <div id="detail-card"></div>
@@ -946,7 +1050,35 @@ function computeComposite(m, hardener, reinfList){
   const costLo = rawCostLo*1.15;
   const costHi = rawCostHi*1.6;
 
-  return {rho,E1,E2,E_eff,ts,strengthModel,failureMode,k1,k2,k_iso,k_eff,cte1,cte2,nu12,cte_eff,maxTemp,matMaxT,matProcT,electrical,costLo,costHi,massM,massRows,VfTotal,Vm};
+  // --- G12 — in-plane shear modulus via Halpin-Tsai (ξ = 1) ----------------
+  const GmBase = m.E/(2*(1+m.nu));
+  const reinfListG = reinfList.map(x=>({...x, mat:{...x.mat, G: x.mat.E/(2*(1+x.mat.nu))}}));
+  const G12 = sequentialHalpinTsai(GmBase, Vm, reinfListG, 'G');
+
+  // --- Compressive strength ------------------------------------------------
+  // Fibre composites: Rosen microbuckling (misalignment-corrected):
+  //   σ_c ≈ G₁₂ / (2·(1−Vf_fibre)) — capped at 0.65×σ_t (empirical PMC limit)
+  // Ductile metal matrix: compressive yield ≈ tensile yield
+  // Particulate-only: σ_c ≈ σ_t (similar behaviour in compression)
+  const VfFiber = reinfList.filter(x=>x.orientation!=='particulate').reduce((s,x)=>s+x.vf,0);
+  let tsCompr, comprModel;
+  if(VfFiber===0){
+    tsCompr = ts*(m.ductile?1.0:1.05);
+    comprModel = 'Particulate reinforcement behaves similarly in tension and compression — estimated at parity with the tensile value.';
+  } else if(m.ductile){
+    tsCompr = ts*0.95;
+    comprModel = `Ductile ${m.name} matrix — compressive yield strength ≈ tensile yield.`;
+  } else {
+    const rosenEst = (G12*1000)/(2*(1-VfFiber));
+    tsCompr = Math.min(rosenEst, ts*0.65);
+    comprModel = `Rosen microbuckling (misalignment-corrected): σ_c ≈ G₁₂/(2(1−Vf_fibre)) = ${fmt(rosenEst,0)} MPa, capped at 0.65×σ_t.`;
+  }
+
+  // --- Specific properties (weight-normalised performance indices) ----------
+  const E_specific = E_eff/rho;   // GPa·cm³/g  ≡  MN·m/kg
+  const ts_specific = ts/rho;     // MPa·cm³/g  ≡  kN·m/kg
+
+  return {rho,E1,E2,E_eff,ts,tsCompr,comprModel,G12,E_specific,ts_specific,strengthModel,failureMode,k1,k2,k_iso,k_eff,cte1,cte2,nu12,cte_eff,maxTemp,matMaxT,matProcT,electrical,costLo,costHi,massM,massRows,VfTotal,Vm};
 }
 
 function buildStandardsCard(m,r,reinfList){
@@ -1037,8 +1169,13 @@ function runForge(){
 
   document.getElementById('prop-table').innerHTML = `
     <tr><td>Density</td><td>${fmt(c.rho)}<span class="unit">g/cm³</span></td></tr>
-    <tr><td>Effective tensile modulus</td><td>${fmt(c.E_eff)}<span class="unit">GPa</span></td></tr>
-    <tr><td>Tensile strength</td><td>${fmt(c.ts,0)}<span class="unit">MPa</span></td></tr>
+    <tr><td>Tensile modulus E_eff</td><td>${fmt(c.E_eff)}<span class="unit">GPa</span></td></tr>
+    <tr><td>Specific stiffness (E/ρ)</td><td>${fmt(c.E_specific,1)}<span class="unit">GPa·cm³/g</span></td></tr>
+    <tr><td>In-plane shear modulus G₁₂</td><td>${fmt(c.G12)}<span class="unit">GPa</span></td></tr>
+    <tr><td>Poisson's ratio ν₁₂</td><td>${fmt(c.nu12,3)}</td></tr>
+    <tr><td>Tensile strength σ_t</td><td>${fmt(c.ts,0)}<span class="unit">MPa</span></td></tr>
+    <tr><td>Compressive strength σ_c (est.)</td><td>${fmt(c.tsCompr,0)}<span class="unit">MPa</span></td></tr>
+    <tr><td>Specific strength (σ_t/ρ)</td><td>${fmt(c.ts_specific,0)}<span class="unit">MPa·cm³/g</span></td></tr>
     <tr><td>Failure mode</td><td style="text-align:left;font-size:12.5px;">${c.failureMode}</td></tr>
     <tr><td>Thermal conductivity</td><td>${fmt(c.k_eff)}<span class="unit">W/m·K</span></td></tr>
     <tr><td>CTE — longitudinal / transverse</td><td>${fmt(c.cte1,1)} / ${fmt(c.cte2,1)}<span class="unit">×10⁻⁶/K</span></td></tr>
@@ -1056,7 +1193,10 @@ function runForge(){
     Failure strains in play: matrix ${fmt(m.elong,1)}%, reinforcements — ${strainList}. This determines which governs: <b>${c.failureMode}</b>.<br><br>
     Thermal conductivity blends parallel, series, and nested-Halpin-Tsai bounds per row's architecture. CTE uses <b>Schapery's equations</b> generalized across all phases — longitudinal is the exact modulus-weighted form, transverse is Poisson-corrected using ν₁₂ = ${fmt(c.nu12,2)}.<br><br>
     ${hardener ? `The <b>${hardener.name}</b> curing system shifts the matrix's usable temperature by ${c.matMaxT-m.maxT>=0?'+':''}${fmt(c.matMaxT-m.maxT,0)}°C versus neat resin, and sets the real processing temperature at ${fmt(c.matProcT,0)}°C.<br><br>` : ''}
-    Maximum service temperature is capped by whichever constituent degrades first — here, <b>${limiter}</b> at ${fmt(c.maxTemp,0)}°C.
+    Maximum service temperature is capped by whichever constituent degrades first — here, <b>${limiter}</b> at ${fmt(c.maxTemp,0)}°C.<br><br>
+    <b>In-plane shear modulus G₁₂ = ${fmt(c.G12)} GPa</b> — Halpin–Tsai (ξ = 1) applied sequentially to each reinforcement's shear modulus Gᵢ = Eᵢ/(2(1+νᵢ)).<br><br>
+    <b>Compressive strength ≈ ${fmt(c.tsCompr,0)} MPa</b> — ${c.comprModel}<br><br>
+    <b>Specific indices</b>: E/ρ = ${fmt(c.E_specific,1)} GPa·cm³/g and σ/ρ = ${fmt(c.ts_specific,0)} MPa·cm³/g. These weight-normalised values are the primary selection metrics for structural aerospace composites (target: E/ρ > 20, σ/ρ > 200).
   `;
   buildStandardsCard(m,reinfList[0]?.mat,reinfList);
 
@@ -1351,6 +1491,125 @@ function animateForge(){
   if(!dragging){ rotY += 0.0022; }
   forgeRenderer.render(forgeScene, forgeCam);
 }
+
+/* =====================================================================
+   AI CHAT
+===================================================================== */
+let chatHistory = [];
+let chatOpen = false;
+
+function buildForgeContext(){
+  const mEl = document.getElementById('sel-matrix');
+  if(!mEl) return '';
+  const m = byId(mEl.value);
+  if(!m) return '';
+  const hardener = hardenerChoice ? (HARDENERS[m.id]||[]).find(h=>h.id===hardenerChoice) : null;
+  const reinfList = reinforcements.map(row=>({mat:byId(row.id), vf:row.vf/100, orientation:row.orientation}));
+  const c = computeComposite(m, hardener, reinfList);
+  let ctx = `Matrix: ${m.name} (${CAT_LABELS[m.cat]})`;
+  if(hardener) ctx += `, cured with ${hardener.name}`;
+  ctx += '\nReinforcements: ' + reinfList.map(x=>`${x.mat.name} at ${Math.round(x.vf*100)}% vol (${x.orientation})`).join(', ');
+  ctx += `\n\nComputed composite properties:
+- Density: ${fmt(c.rho)} g/cm³
+- Tensile modulus E_eff: ${fmt(c.E_eff)} GPa (E₁=${fmt(c.E1)} GPa longitudinal, E₂=${fmt(c.E2)} GPa transverse)
+- Specific stiffness E/ρ: ${fmt(c.E_specific,1)} GPa·cm³/g
+- In-plane shear modulus G₁₂: ${fmt(c.G12)} GPa | Poisson's ratio ν₁₂: ${fmt(c.nu12,3)}
+- Tensile strength σ_t: ${fmt(c.ts,0)} MPa | Compressive strength σ_c (est.): ${fmt(c.tsCompr,0)} MPa
+- Specific strength σ/ρ: ${fmt(c.ts_specific,0)} MPa·cm³/g
+- Failure mode: ${c.failureMode}
+- Thermal conductivity: ${fmt(c.k_eff)} W/m·K
+- CTE (longitudinal / transverse): ${fmt(c.cte1,1)} / ${fmt(c.cte2,1)} ×10⁻⁶/K
+- Max service temperature: ${fmt(c.maxTemp,0)}°C
+- Electrical: ${c.electrical}`;
+  return ctx;
+}
+
+function updateAiCtxLabel(){
+  const m = byId(document.getElementById('sel-matrix').value);
+  if(!m) return;
+  const hardener = hardenerChoice ? (HARDENERS[m.id]||[]).find(h=>h.id===hardenerChoice) : null;
+  const reinfNames = reinforcements.map(r=>byId(r.id)?.name||'?').join(' + ');
+  const label = `${m.name}${hardener?' / '+hardener.name.split(' — ')[0]:''} + ${reinfNames}`;
+  const el = document.getElementById('ai-ctx-label');
+  if(el) el.textContent = `Context: ${label.length>52?label.slice(0,50)+'…':label}`;
+}
+
+function toggleChat(){
+  chatOpen = !chatOpen;
+  document.getElementById('ai-chat-panel').classList.toggle('show', chatOpen);
+  document.getElementById('ai-chat-btn').classList.toggle('open', chatOpen);
+  if(chatOpen){ updateAiCtxLabel(); document.getElementById('ai-input').focus(); }
+}
+
+const MAX_MSG_LEN = 2000;
+const MAX_HISTORY = 30; // max rounds before we trim oldest
+
+function escHtml(s){
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+          .replace(/"/g,'&quot;').replace(/'/g,'&#039;');
+}
+function appendMsg(role, text){
+  const div = document.createElement('div');
+  div.className = 'ai-msg '+role;
+  // Escape all HTML first, then apply a strict markdown-lite pass (only <b> and <br>)
+  const safe = escHtml(text)
+    .replace(/\*\*(.*?)\*\*/g,'<b>$1</b>')
+    .replace(/\n/g,'<br>');
+  div.innerHTML = safe;
+  document.getElementById('ai-messages').appendChild(div);
+  document.getElementById('ai-messages').scrollTop = 99999;
+  return div;
+}
+
+async function sendChat(userText){
+  if(!userText.trim()) return;
+  userText = userText.slice(0, MAX_MSG_LEN); // cap input length
+  const input = document.getElementById('ai-input');
+  const sendBtn = document.getElementById('ai-send');
+  input.value = ''; sendBtn.disabled = true;
+  appendMsg('user', userText);
+  // Hide chips after first use
+  const chips = document.getElementById('ai-chips');
+  if(chips) chips.style.display = 'none';
+
+  const typing = document.createElement('div');
+  typing.className = 'ai-typing'; typing.textContent = '...';
+  document.getElementById('ai-messages').appendChild(typing);
+  document.getElementById('ai-messages').scrollTop = 99999;
+
+  chatHistory.push({role:'user', parts:[{text:userText}]});
+  // Keep history bounded — drop oldest pairs when over limit
+  if(chatHistory.length > MAX_HISTORY) chatHistory.splice(0, 2);
+  try{
+    const resp = await fetch('/api/chat',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ messages:chatHistory, forgeContext:buildForgeContext().slice(0,2000) })
+    });
+    const data = await resp.json();
+    typing.remove();
+    if(data.error){ appendMsg('error','Error: '+data.error); chatHistory.pop(); }
+    else{
+      appendMsg('model', data.text);
+      chatHistory.push({role:'model', parts:[{text:data.text}]});
+    }
+  } catch(e){
+    typing.remove();
+    appendMsg('error','Network error — please try again.');
+    chatHistory.pop();
+  }
+  sendBtn.disabled = false;
+}
+
+document.getElementById('ai-chat-btn').addEventListener('click', toggleChat);
+document.getElementById('ai-close').addEventListener('click', toggleChat);
+document.getElementById('ai-send').addEventListener('click', ()=>sendChat(document.getElementById('ai-input').value));
+document.getElementById('ai-input').addEventListener('keydown', e=>{
+  if(e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); sendChat(e.target.value); }
+});
+document.querySelectorAll('.ai-chip').forEach(btn=>{
+  btn.addEventListener('click', ()=>sendChat(btn.dataset.q));
+});
 
 /* =====================================================================
    INIT
