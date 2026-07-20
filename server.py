@@ -70,25 +70,51 @@ def chat():
         }
     }
 
-    try:
-        resp = req.post(
-            GEMINI_URL,
-            params={'key': GEMINI_API_KEY},
-            json=payload,
-            timeout=30
-        )
-        resp.raise_for_status()
-        result = resp.json()
-        text = result['candidates'][0]['content']['parts'][0]['text']
-        return jsonify({'text': text})
-    except req.exceptions.RequestException as e:
-        # Log detail server-side only — never expose URLs (which contain the key) to the client
-        app.logger.error('Gemini request error: %s', e)
-        return jsonify({'error': 'AI service unavailable — please try again shortly.'}), 502
-    except (KeyError, IndexError) as e:
-        # Log raw response server-side only — never forward upstream bodies to the client
-        app.logger.error('Unexpected Gemini response shape: %s', e)
-        return jsonify({'error': 'AI service returned an unexpected response. Please try again.'}), 500
+    import time
+
+    last_status = None
+    for attempt in range(3):
+        try:
+            resp = req.post(
+                GEMINI_URL,
+                params={'key': GEMINI_API_KEY},
+                json=payload,
+                timeout=30
+            )
+            last_status = resp.status_code
+
+            if resp.status_code == 429:
+                # Rate limited — back off and retry
+                wait = 2 ** attempt  # 1s, 2s, 4s
+                app.logger.warning('Gemini rate limit (429) on attempt %d; retrying in %ds', attempt + 1, wait)
+                time.sleep(wait)
+                continue
+
+            resp.raise_for_status()
+            result = resp.json()
+            text = result['candidates'][0]['content']['parts'][0]['text']
+            return jsonify({'text': text})
+
+        except req.exceptions.HTTPError as e:
+            # Log only the status code — never the URL (which contains the API key)
+            app.logger.error('Gemini HTTP error on attempt %d: status=%s', attempt + 1, last_status)
+            if last_status and last_status < 500:
+                break  # client-side errors won't improve with retry
+            time.sleep(2 ** attempt)
+
+        except req.exceptions.RequestException as e:
+            # Log type only — exc message may contain the request URL with the key
+            app.logger.error('Gemini connection error on attempt %d: %s', attempt + 1, type(e).__name__)
+            time.sleep(2 ** attempt)
+
+        except (KeyError, IndexError) as e:
+            app.logger.error('Unexpected Gemini response shape: %s', type(e).__name__)
+            return jsonify({'error': 'AI service returned an unexpected response. Please try again.'}), 500
+
+    # All retries exhausted
+    if last_status == 429:
+        return jsonify({'error': 'The AI is busy right now (rate limit). Please wait a few seconds and try again.'}), 429
+    return jsonify({'error': 'AI service unavailable — please try again shortly.'}), 502
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=False)
