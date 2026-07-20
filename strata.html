@@ -1,0 +1,1366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>STRATA — The Composite Compendium</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --obsidian:#0B0D0F;
+  --graphite:#15181C;
+  --graphite2:#1D2126;
+  --hairline:#2A2E33;
+  --bone:#E9E4D8;
+  --bone-dim:#9B9689;
+  --verdigris:#4F9C86;
+  --molten:#E8A23D;
+  --steel:#6C90AD;
+  --rust:#C15A3C;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;
+  background:var(--obsidian);
+  color:var(--bone);
+  font-family:'Inter',sans-serif;
+  overflow-x:hidden;
+}
+::selection{background:var(--verdigris);color:var(--obsidian);}
+h1,h2,h3,.display{font-family:'Fraunces',serif;font-weight:600;letter-spacing:-0.01em;}
+.mono{font-family:'Space Mono',monospace;}
+a{color:inherit;}
+.eyebrow{
+  font-family:'Space Mono',monospace;
+  font-size:11px;
+  letter-spacing:0.18em;
+  text-transform:uppercase;
+  color:var(--verdigris);
+}
+.wrap{max-width:1180px;margin:0 auto;padding:0 32px;}
+section{position:relative;padding:120px 0;}
+.hairline{border:none;border-top:1px solid var(--hairline);margin:0;}
+
+/* ---------- HERO ---------- */
+#hero{
+  height:100vh;
+  min-height:640px;
+  display:flex;
+  align-items:center;
+  padding:0;
+  overflow:hidden;
+}
+#hero-canvas{position:absolute;inset:0;z-index:1;}
+.hero-inner{position:relative;z-index:2;width:100%;}
+.hero-title{
+  font-size:clamp(56px,10vw,132px);
+  line-height:0.92;
+  margin:18px 0 0 0;
+  color:var(--bone);
+}
+.hero-title em{font-style:italic;color:var(--molten);}
+.hero-sub{
+  max-width:520px;
+  font-size:17px;
+  line-height:1.6;
+  color:var(--bone-dim);
+  margin-top:22px;
+}
+.hero-cta{
+  display:inline-flex;align-items:center;gap:10px;
+  margin-top:36px;padding:14px 26px;
+  background:transparent;border:1px solid var(--verdigris);
+  color:var(--verdigris);font-family:'Space Mono',monospace;font-size:13px;
+  letter-spacing:0.06em;text-transform:uppercase;cursor:pointer;
+  transition:background .2s,color .2s;
+}
+.hero-cta:hover{background:var(--verdigris);color:var(--obsidian);}
+.hero-fade{
+  position:absolute;bottom:0;left:0;right:0;height:220px;z-index:2;
+  background:linear-gradient(to bottom, rgba(11,13,15,0), var(--obsidian));
+  pointer-events:none;
+}
+.scroll-hint{position:absolute;bottom:34px;left:32px;z-index:3;font-family:'Space Mono',monospace;font-size:11px;color:var(--bone-dim);letter-spacing:.1em;}
+
+/* ---------- SECTION HEADERS ---------- */
+.section-head{max-width:640px;margin-bottom:56px;}
+.section-head h2{font-size:clamp(32px,4vw,46px);margin:10px 0 14px 0;}
+.section-head p{color:var(--bone-dim);font-size:15.5px;line-height:1.65;}
+
+/* ---------- ATLAS ---------- */
+.atlas-tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:34px;}
+.atlas-search-input{
+  width:100%;background:var(--graphite);border:1px solid var(--hairline);color:var(--bone);
+  padding:14px 40px 14px 16px;font-family:'Inter',sans-serif;font-size:15px;margin-bottom:18px;
+}
+.atlas-search-input:focus{outline:none;border-color:var(--molten);}
+.atlas-search-input::placeholder{color:var(--bone-dim);}
+.atlas-search-wrap{position:relative;}
+.atlas-search-clear{
+  position:absolute;top:50%;right:14px;transform:translateY(-50%);
+  color:var(--bone-dim);font-family:'Space Mono',monospace;font-size:13px;cursor:pointer;
+  display:none;padding:4px;
+}
+.atlas-search-clear:hover{color:var(--molten);}
+.atlas-search-clear.show{display:block;}
+.atlas-empty{
+  font-family:'Space Mono',monospace;font-size:12.5px;color:var(--bone-dim);
+  padding:34px 0;text-align:center;border:1px dashed var(--hairline);
+}
+.tab{
+  font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.04em;
+  padding:9px 16px;border:1px solid var(--hairline);color:var(--bone-dim);
+  cursor:pointer;background:var(--graphite);transition:all .15s;
+  text-transform:uppercase;
+}
+.tab.active,.tab:hover{border-color:var(--verdigris);color:var(--verdigris);}
+.atlas-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;
+}
+.mat-card{
+  background:var(--graphite);border:1px solid var(--hairline);padding:18px;
+  cursor:pointer;transition:transform .15s,border-color .15s;position:relative;
+}
+.mat-card:hover{border-color:var(--molten);transform:translateY(-3px);}
+.mat-card .tag{
+  font-family:'Space Mono',monospace;font-size:9.5px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--steel);
+}
+.mat-card h4{margin:8px 0 10px 0;font-size:19px;font-weight:600;}
+.mat-card .props{font-family:'Space Mono',monospace;font-size:11.5px;color:var(--bone-dim);line-height:1.9;}
+.mat-card .props b{color:var(--bone);font-weight:400;}
+.mat-card .cost-chip{
+  position:absolute;top:16px;right:16px;font-family:'Space Mono',monospace;
+  font-size:10.5px;color:var(--molten);
+}
+.roles-dots{position:absolute;bottom:16px;right:16px;display:flex;gap:5px;}
+.dot{width:6px;height:6px;border-radius:50%;}
+.dot.m{background:var(--steel);} .dot.r{background:var(--verdigris);}
+
+/* Material detail overlay */
+#detail-overlay{
+  position:fixed;inset:0;background:rgba(11,13,15,0.92);z-index:100;
+  display:none;align-items:center;justify-content:center;padding:24px;
+  backdrop-filter:blur(6px);
+}
+#detail-overlay.show{display:flex;}
+#detail-card{
+  background:var(--graphite2);border:1px solid var(--hairline);max-width:560px;width:100%;
+  padding:38px;max-height:82vh;overflow-y:auto;
+}
+#detail-card h3{font-size:30px;margin:6px 0 4px 0;}
+#detail-card .close{
+  float:right;cursor:pointer;color:var(--bone-dim);font-family:'Space Mono',monospace;font-size:13px;
+}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px 22px;margin:22px 0;font-family:'Space Mono',monospace;font-size:12.5px;}
+.detail-grid div span{display:block;color:var(--bone-dim);font-size:10px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:3px;}
+#detail-card .note{color:var(--bone-dim);font-size:14px;line-height:1.6;font-family:'Inter',sans-serif;margin-top:10px;}
+#detail-card .source-line{margin-top:18px;padding-top:16px;border-top:1px solid var(--hairline);font-size:13px;color:var(--bone-dim);}
+
+/* ---------- FORGE ---------- */
+#forge{background:var(--graphite);}
+.forge-layout{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start;}
+@media(max-width:920px){.forge-layout{grid-template-columns:1fr;}}
+.control-block{margin-bottom:22px;}
+.control-block label{
+  display:block;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--bone-dim);margin-bottom:8px;
+}
+select, .seg-btn{
+  background:var(--obsidian);border:1px solid var(--hairline);color:var(--bone);
+  padding:12px 14px;font-family:'Inter',sans-serif;font-size:14.5px;width:100%;
+  appearance:none;cursor:pointer;
+}
+select:focus{outline:none;border-color:var(--verdigris);}
+.seg-row{display:flex;gap:8px;flex-wrap:wrap;}
+.seg-btn{width:auto;flex:1;text-align:center;font-size:13px;padding:11px 10px;}
+.seg-btn.active{border-color:var(--molten);color:var(--molten);}
+input[type=range]{width:100%;accent-color:var(--verdigris);background:transparent;}
+.vf-readout{font-family:'Space Mono',monospace;color:var(--molten);font-size:13px;}
+
+.hardener-note{
+  background:var(--obsidian);border:1px solid var(--hairline);padding:14px 16px;
+  font-size:13px;color:var(--bone-dim);line-height:1.6;
+}
+.hardener-note b{color:var(--steel);}
+.hardener-meta{font-family:'Space Mono',monospace;font-size:11px;color:var(--bone-dim);margin-top:8px;display:block;}
+
+.reinf-row{
+  background:var(--obsidian);border:1px solid var(--hairline);border-left:3px solid var(--verdigris);
+  padding:16px 16px 14px 16px;margin-bottom:12px;
+}
+.reinf-row-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.reinf-row-title{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--verdigris);}
+.reinf-row-remove{font-family:'Space Mono',monospace;font-size:12px;color:var(--bone-dim);cursor:pointer;}
+.reinf-row-remove:hover{color:var(--rust);}
+.reinf-row select{margin-bottom:10px;}
+.reinf-row .sub-label{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--bone-dim);margin:8px 0 6px 0;display:block;}
+.add-reinf-btn{
+  border:1px dashed var(--hairline);color:var(--bone-dim);text-align:center;padding:12px;
+  font-family:'Space Mono',monospace;font-size:12.5px;cursor:pointer;letter-spacing:.04em;
+  text-transform:uppercase;transition:all .15s;
+}
+.add-reinf-btn:hover{border-color:var(--verdigris);color:var(--verdigris);}
+.add-reinf-btn.disabled{opacity:0.4;cursor:not-allowed;}
+.add-reinf-btn.disabled:hover{border-color:var(--hairline);color:var(--bone-dim);}
+#forge-canvas-wrap{
+  position:sticky;top:24px;height:420px;background:var(--obsidian);
+  border:1px solid var(--hairline);
+}
+#forge-canvas{width:100%;height:100%;cursor:grab;}
+#forge-canvas:active{cursor:grabbing;}
+.canvas-tag{position:absolute;bottom:10px;left:14px;font-family:'Space Mono',monospace;font-size:10px;color:var(--bone-dim);}
+
+.verdict{
+  margin-top:8px;padding:16px 18px;border-left:3px solid var(--verdigris);background:rgba(79,156,134,0.08);
+  font-family:'Space Mono',monospace;font-size:13px;line-height:1.7;
+}
+.verdict.bad{border-color:var(--rust);background:rgba(193,90,60,0.1);}
+
+.result-block{margin-top:44px;}
+.result-block h3{font-size:20px;margin-bottom:4px;}
+.result-sub{color:var(--bone-dim);font-size:13px;margin-bottom:18px;font-family:'Space Mono',monospace;}
+.prop-table{width:100%;border-collapse:collapse;font-size:14px;}
+.prop-table td{padding:11px 4px;border-bottom:1px solid var(--hairline);}
+.prop-table td:first-child{color:var(--bone-dim);width:46%;}
+.prop-table td:last-child{font-family:'Space Mono',monospace;color:var(--bone);text-align:right;}
+.prop-table td .unit{color:var(--bone-dim);font-size:11px;margin-left:5px;}
+.explain-box{
+  margin-top:20px;background:var(--obsidian);border:1px solid var(--hairline);
+  padding:20px 22px;font-size:13.5px;line-height:1.75;color:var(--bone-dim);
+}
+.explain-box b{color:var(--verdigris);font-weight:600;}
+.explain-box .formula{font-family:'Space Mono',monospace;color:var(--steel);display:block;margin:6px 0;}
+.astm-note{margin-top:16px;padding-top:14px;border-top:1px solid var(--hairline);font-size:12px;color:var(--bone-dim);}
+.astm-note b{color:var(--steel);}
+.standards-card{
+  background:var(--obsidian);border:1px solid var(--molten);border-left:3px solid var(--molten);
+  padding:18px 20px;font-size:13.5px;line-height:1.85;color:var(--bone);
+}
+.standards-card .std-row{display:flex;justify-content:space-between;gap:14px;padding:6px 0;border-bottom:1px solid var(--hairline);}
+.standards-card .std-row:last-child{border-bottom:none;}
+.standards-card .std-prop{color:var(--bone-dim);font-family:'Space Mono',monospace;font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;}
+.standards-card .std-code{color:var(--molten);font-family:'Space Mono',monospace;font-size:12.5px;text-align:right;}
+
+.scenario-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;}
+#behavior-out{
+  margin-top:16px;padding:18px 20px;background:var(--obsidian);border:1px solid var(--hairline);
+  font-size:14.5px;line-height:1.7;color:var(--bone);min-height:60px;
+}
+#behavior-out .scenario-label{color:var(--molten);font-family:'Space Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:8px;}
+
+.cost-strip{display:flex;justify-content:space-between;margin-top:18px;font-family:'Space Mono',monospace;font-size:12.5px;color:var(--bone-dim);}
+.cost-bar{position:relative;height:8px;background:var(--hairline);margin-top:10px;overflow:hidden;}
+.cost-bar-fill{position:absolute;top:0;left:0;bottom:0;background:linear-gradient(90deg,var(--verdigris),var(--molten));}
+
+/* ---------- LEDGER ---------- */
+#ledger table{width:100%;border-collapse:collapse;font-size:13.5px;}
+#ledger th{
+  text-align:left;padding:10px 8px;font-family:'Space Mono',monospace;font-size:10.5px;
+  text-transform:uppercase;letter-spacing:.08em;color:var(--bone-dim);border-bottom:1px solid var(--hairline);
+  cursor:pointer;
+}
+#ledger td{padding:12px 8px;border-bottom:1px solid var(--hairline);}
+#ledger tr:hover td{background:var(--graphite);}
+.rank{font-family:'Space Mono',monospace;color:var(--bone-dim);width:30px;}
+.source-cell{color:var(--bone-dim);font-size:12.5px;}
+
+footer{padding:60px 0 50px 0;border-top:1px solid var(--hairline);}
+footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:24px;}
+footer .col{max-width:420px;font-size:13px;color:var(--bone-dim);line-height:1.7;}
+footer .col h4{color:var(--bone);font-size:13px;text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;font-family:'Space Mono',monospace;font-weight:400;}
+
+@media(max-width:640px){
+  section{padding:80px 0;}
+  .wrap{padding:0 20px;}
+  .detail-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<section id="hero">
+  <canvas id="hero-canvas"></canvas>
+  <div class="hero-fade"></div>
+  <div class="wrap hero-inner">
+    <span class="eyebrow">Materials · Composites · Micromechanics</span>
+    <h1 class="hero-title">STRA<em>T</em>A</h1>
+    <p class="hero-sub">Every element, alloy, ceramic, polymer, and fiber — natural or synthetic — reduced to the numbers that matter. Choose two constituents. Watch a composite assemble itself, and learn exactly why it behaves the way it does.</p>
+    <button class="hero-cta" onclick="document.getElementById('forge').scrollIntoView({behavior:'smooth'})">↓ Enter the Forge</button>
+  </div>
+  <div class="scroll-hint">54 CONSTITUENTS LOADED — SCROLL TO BEGIN</div>
+</section>
+
+<section id="atlas">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">The Atlas</span>
+      <h2>Every constituent, catalogued.</h2>
+      <p>Elements, alloys, ceramics, and polymers — natural or man-made — each with the density, stiffness, strength, thermal behaviour, and cost that governs how it performs. Search a material or pick a category to browse.</p>
+    </div>
+    <div class="atlas-search-wrap">
+      <input id="atlas-search" class="atlas-search-input" type="text" placeholder="Search by name — e.g. &quot;carbon&quot;, &quot;epoxy&quot;, &quot;flax&quot;…" autocomplete="off">
+      <span id="atlas-search-clear" class="atlas-search-clear" title="Clear search">✕</span>
+    </div>
+    <div class="atlas-tabs" id="atlas-tabs"></div>
+    <div id="atlas-empty" class="atlas-empty">Nothing shown yet — search a material by name, or choose a category above.</div>
+    <div class="atlas-grid" id="atlas-grid"></div>
+  </div>
+</section>
+
+<hr class="hairline">
+
+<section id="forge">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">The Forge</span>
+      <h2>Build a composite. See why it works.</h2>
+      <p>Pick a continuous matrix and a reinforcing phase. STRATA runs the same micromechanics used in composite-materials coursework — rule of mixtures, Halpin–Tsai, and Schapery's CTE bounds — and shows its working.</p>
+    </div>
+
+    <div class="forge-layout">
+      <div>
+        <div class="control-block">
+          <label>Matrix — the continuous, binding phase</label>
+          <select id="sel-matrix"></select>
+        </div>
+        <div class="control-block">
+          <label>Curing agent / hardener</label>
+          <div id="hardener-block"></div>
+        </div>
+
+        <div class="control-block">
+          <label>Reinforcement stack — <span class="vf-readout" id="vf-budget-readout">35% of 70% used</span></label>
+          <div id="reinforcement-list"></div>
+          <div id="add-reinf-btn" class="add-reinf-btn">+ Add another reinforcement</div>
+        </div>
+
+        <div id="verdict-box"></div>
+
+        <div class="result-block">
+          <h3>Predicted properties</h3>
+          <div class="result-sub" id="combo-label"></div>
+          <table class="prop-table" id="prop-table"></table>
+          <div class="explain-box" id="explain-box"></div>
+        </div>
+
+        <div class="result-block">
+          <h3>Testing standards this maps to</h3>
+          <div class="result-sub">How you'd verify these numbers on a bench, per ASTM</div>
+          <div class="standards-card" id="standards-card"></div>
+        </div>
+
+        <div class="result-block">
+          <h3>Behaviour under conditions</h3>
+          <div class="result-sub">Choose an environment the finished part must survive</div>
+          <div class="scenario-row" id="scenario-row"></div>
+          <div id="behavior-out"></div>
+        </div>
+
+        <div class="result-block">
+          <h3>Cost of the build</h3>
+          <div class="cost-strip"><span id="cost-lo-label">low</span><span id="cost-hi-label">high</span></div>
+          <div class="cost-bar"><div class="cost-bar-fill" id="cost-bar-fill"></div></div>
+          <div class="explain-box" id="cost-explain"></div>
+        </div>
+      </div>
+
+      <div>
+        <div id="forge-canvas-wrap">
+          <canvas id="forge-canvas"></canvas>
+          <div class="canvas-tag" id="canvas-tag">drag to rotate</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="hairline">
+
+<section id="ledger">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Where To Buy</span>
+      <h2>Source your current build.</h2>
+      <p>Real-world retail pricing and supplier options for the two materials currently loaded in the Forge above — this updates live as you change your selection there.</p>
+    </div>
+    <table>
+      <thead><tr><th>Material</th><th>Category</th><th>Market Price / kg (INR)</th><th>Where to Buy It</th></tr></thead>
+      <tbody id="ledger-body"></tbody>
+    </table>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="col">
+      <h4>Method</h4>
+      Composite properties are first-order engineering estimates from classical micromechanics: rule of mixtures for density and longitudinal modulus, Halpin–Tsai for transverse and particulate stiffness, Schapery bounds for CTE, and parallel/series conduction models for thermal behaviour. These are the same models taught in introductory composite-materials courses — treat outputs as design-stage estimates, not certified lab data.
+    </div>
+    <div class="col">
+      <h4>Scope</h4>
+      54 constituents spanning elements, metal alloys, technical ceramics, natural and synthetic fibres, and natural and synthetic polymer matrices. Prices are shown in Indian Rupees, converted from broad international USD market ranges at an approximate mid-2026 rate (~₹96/USD) — actual rates fluctuate daily, and material prices themselves vary further with grade, quantity, and region.
+    </div>
+  </div>
+</footer>
+
+<div id="detail-overlay">
+  <div id="detail-card"></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+/* =====================================================================
+   MATERIALS DATABASE
+   rho: g/cm3 | E: GPa | ts: MPa tensile strength | elong: % strain to fail
+   k: W/mK thermal conductivity | cte: 1e-6/K | maxT: service/degradation °C
+   procT: processing/cure/melt temp °C (only meaningful if used as matrix)
+   elec: C conductor / S semiconductor / I insulator
+   costLo/costHi: USD per kg | moist/uv: L M H sensitivity
+   chem: P F G E (poor/fair/good/excellent resistance) | tough: L M H
+   ductile: bool | matrix/reinf: role flags
+===================================================================== */
+const DATA = [
+// ---- ELEMENTS ----
+{id:'al',name:'Aluminum',cat:'element',matrix:true,reinf:true,rho:2.70,E:69,ts:90,elong:40,k:237,cte:23.1,maxT:200,procT:660,elec:'C',costLo:2,costHi:3,source:'Bauxite ore refined via the Hall–Héroult electrolysis process',moist:'L',uv:'L',chem:'G',tough:'H',ductile:true,note:'Soft and ductile in pure form; almost always alloyed before structural use.',nu:0.33,color:'#c9cdd0',astm:"ASTM E8/E8M (tensile), ASTM B311 (density)"},
+{id:'fe',name:'Iron',cat:'element',matrix:true,reinf:true,rho:7.87,E:211,ts:250,elong:30,k:80,cte:11.8,maxT:500,procT:1538,elec:'C',costLo:0.5,costHi:1,source:'Hematite/magnetite ore, reduced in a blast furnace',moist:'H',uv:'L',chem:'P',tough:'H',ductile:true,note:'Pure iron is rarely used industrially — almost always alloyed as steel.',nu:0.29,color:'#8c8a86',astm:"ASTM E8/E8M (tensile), ASTM E1268 (microstructure)"},
+{id:'ti',name:'Titanium',cat:'element',matrix:true,reinf:true,rho:4.51,E:116,ts:240,elong:25,k:22,cte:8.6,maxT:400,procT:1668,elec:'C',costLo:8,costHi:15,source:'Ilmenite/rutile ore processed via the Kroll process',moist:'L',uv:'L',chem:'E',tough:'H',ductile:true,note:'Outstanding strength-to-weight and corrosion resistance; expensive to refine.',nu:0.32,color:'#9a9b9d',astm:"ASTM E8/E8M (tensile), ASTM B265 (specification)"},
+{id:'cu',name:'Copper',cat:'element',matrix:true,reinf:true,rho:8.96,E:117,ts:220,elong:45,k:401,cte:16.5,maxT:300,procT:1085,elec:'C',costLo:8,costHi:10,source:'Chalcopyrite ore, smelted and electro-refined',moist:'L',uv:'L',chem:'F',tough:'H',ductile:true,note:'The best common electrical and thermal conductor among structural metals.',nu:0.34,color:'#c77f4a',astm:"ASTM E8/E8M (tensile), ASTM B193 (resistivity)"},
+{id:'c',name:'Carbon (graphite)',cat:'element',matrix:false,reinf:true,rho:2.26,E:15,ts:15,elong:0.5,k:150,cte:6,maxT:3000,procT:null,elec:'C',costLo:1,costHi:3,source:'Natural graphite deposits, or synthesised from petroleum coke',moist:'L',uv:'L',chem:'E',tough:'L',ductile:false,note:'Bulk graphite is weak and brittle — its real value is as the precursor to carbon fibre.',nu:0.2,color:'#2b2b2b',astm:"ASTM C565 (graphite physical properties)"},
+{id:'si',name:'Silicon',cat:'element',matrix:false,reinf:true,rho:2.33,E:150,ts:120,elong:1,k:150,cte:2.6,maxT:1400,procT:null,elec:'S',costLo:2,costHi:4,source:'Silica sand reduced in an electric arc furnace',moist:'L',uv:'L',chem:'G',tough:'L',ductile:false,note:'A semiconductor and the feedstock for silicon-carbide ceramics.',nu:0.28,color:'#4d4a4f',astm:"ASTM F1366 (semiconductor-grade specification)"},
+{id:'mg',name:'Magnesium',cat:'element',matrix:true,reinf:true,rho:1.74,E:45,ts:160,elong:10,k:156,cte:26,maxT:150,procT:650,elec:'C',costLo:3,costHi:5,source:'Seawater/brine electrolysis or thermal ore reduction',moist:'H',uv:'L',chem:'P',tough:'M',ductile:true,note:'The lightest structural metal; corrodes readily and is flammable as fine powder.',nu:0.35,color:'#c8c9c4',astm:"ASTM E8/E8M (tensile), ASTM B94 (specification)"},
+{id:'ni',name:'Nickel',cat:'element',matrix:true,reinf:true,rho:8.90,E:200,ts:300,elong:40,k:91,cte:13.4,maxT:600,procT:1455,elec:'C',costLo:15,costHi:20,source:'Sulfide/laterite ores, smelted and refined',moist:'L',uv:'L',chem:'G',tough:'H',ductile:true,note:'The backbone element of high-temperature superalloys like Inconel.',nu:0.31,color:'#b9b6ae',astm:"ASTM E8/E8M (tensile), ASTM B160 (specification)"},
+{id:'zn',name:'Zinc',cat:'element',matrix:true,reinf:true,rho:7.14,E:108,ts:120,elong:25,k:116,cte:30.2,maxT:150,procT:420,elec:'C',costLo:2,costHi:3,source:'Sphalerite ore, smelted and electrolytically refined',moist:'M',uv:'L',chem:'F',tough:'M',ductile:true,note:'Common sacrificial anode metal, used for galvanising steel.',nu:0.25,color:'#a9acae',astm:"ASTM E8/E8M (tensile), ASTM B6 (specification)"},
+{id:'w',name:'Tungsten',cat:'element',matrix:false,reinf:true,rho:19.3,E:411,ts:980,elong:2,k:173,cte:4.5,maxT:1200,procT:null,elec:'C',costLo:30,costHi:45,source:'Wolframite/scheelite ore, chemically processed',moist:'L',uv:'L',chem:'G',tough:'L',ductile:false,note:'The highest melting point of any common metal, and extremely dense.',nu:0.28,color:'#5c5d5f',astm:"ASTM E8/E8M (tensile), ASTM B760 (specification)"},
+
+// ---- METALS / ALLOYS ----
+{id:'steel',name:'Mild Steel',cat:'metal',matrix:true,reinf:false,rho:7.85,E:200,ts:420,elong:25,k:50,cte:12,maxT:400,procT:1480,elec:'C',costLo:0.6,costHi:1,source:'Recycled scrap or virgin ore, basic-oxygen or electric-arc steelmaking',moist:'H',uv:'L',chem:'P',tough:'H',ductile:true,note:'Tungsten-carbide/steel cermets are a real particulate metal-matrix composite.',nu:0.29,color:'#5a5c5e',astm:"ASTM E8/E8M (tensile), ASTM A370 (mechanical testing)"},
+{id:'ss304',name:'Stainless Steel 304',cat:'metal',matrix:true,reinf:false,rho:8.0,E:193,ts:550,elong:45,k:16,cte:17.3,maxT:870,procT:1450,elec:'C',costLo:2,costHi:4,source:'Iron, chromium and nickel alloyed in an electric-arc furnace',moist:'L',uv:'L',chem:'G',tough:'H',ductile:true,note:'Chosen as an MMC matrix where corrosion resistance outranks weight savings.',nu:0.29,color:'#c6c9cb',astm:"ASTM E8/E8M (tensile), ASTM A276 (specification)"},
+{id:'tialloy',name:'Ti-6Al-4V',cat:'metal',matrix:true,reinf:false,rho:4.43,E:114,ts:950,elong:14,k:7,cte:8.8,maxT:500,procT:1650,elec:'C',costLo:25,costHi:35,source:'Titanium sponge alloyed with aluminium & vanadium, vacuum arc-melted',moist:'L',uv:'L',chem:'E',tough:'H',ductile:true,note:'The premier aerospace metal-matrix with SiC or boron fibre reinforcement.',nu:0.31,color:'#8f9092',astm:"ASTM E8/E8M (tensile), ASTM B348 (specification)"},
+{id:'al6061',name:'Aluminium Alloy 6061',cat:'metal',matrix:true,reinf:false,rho:2.70,E:69,ts:310,elong:12,k:167,cte:23.6,maxT:300,procT:660,elec:'C',costLo:3,costHi:5,source:'Primary or recycled aluminium billet, age-hardened',moist:'L',uv:'L',chem:'G',tough:'H',ductile:true,note:'The most common metal-matrix composite base — Al/SiC brake rotors, Al/Al2O3 struts.',nu:0.33,color:'#b9bcbd',astm:"ASTM E8/E8M (tensile), ASTM B221 (specification)"},
+{id:'brass',name:'Brass',cat:'metal',matrix:true,reinf:false,rho:8.5,E:100,ts:340,elong:25,k:120,cte:20,maxT:200,procT:950,elec:'C',costLo:5,costHi:7,source:'Copper alloyed with zinc, cast or wrought',moist:'M',uv:'L',chem:'F',tough:'H',ductile:true,note:'Decorative/marine hardware alloy; rarely used as a composite matrix.',nu:0.34,color:'#c9a24b',astm:"ASTM E8/E8M (tensile), ASTM B36 (specification)"},
+{id:'bronze',name:'Bronze',cat:'metal',matrix:true,reinf:false,rho:8.8,E:110,ts:350,elong:15,k:60,cte:18,maxT:250,procT:950,elec:'C',costLo:6,costHi:9,source:'Copper alloyed with tin, cast',moist:'L',uv:'L',chem:'G',tough:'H',ductile:true,note:'Historic bearing alloy — bronze/graphite particulate composites self-lubricate.',nu:0.34,color:'#a8763f',astm:"ASTM E8/E8M (tensile), ASTM B505 (specification)"},
+{id:'inconel',name:'Inconel 718',cat:'metal',matrix:true,reinf:false,rho:8.19,E:200,ts:1240,elong:20,k:11.4,cte:13,maxT:980,procT:1350,elec:'C',costLo:40,costHi:60,source:'Vacuum induction-melted nickel-chromium superalloy',moist:'L',uv:'L',chem:'E',tough:'H',ductile:true,note:'Jet-engine MMC matrix for extreme heat and oxidation resistance.',nu:0.29,color:'#8a8d7f',astm:"ASTM E8/E8M (tensile), ASTM B637 (specification)"},
+
+// ---- CERAMICS ----
+{id:'alumina',name:'Alumina (Al2O3)',cat:'ceramic',matrix:true,reinf:true,rho:3.95,E:370,ts:300,elong:0.3,k:30,cte:8.4,maxT:1700,procT:1600,elec:'I',costLo:3,costHi:8,source:'Bauxite refined via the Bayer process, then calcined',moist:'L',uv:'L',chem:'E',tough:'L',ductile:false,note:'Very common reinforcement (particulate/fibre) and a ceramic-matrix option.',nu:0.22,color:'#e7e2d6',astm:"ASTM C1161 (flexural), ASTM C1198 (elastic modulus)"},
+{id:'sic',name:'Silicon Carbide',cat:'ceramic',matrix:true,reinf:true,rho:3.21,E:410,ts:440,elong:0.3,k:120,cte:4.0,maxT:1650,procT:1900,elec:'S',costLo:5,costHi:15,source:'Silica sand and carbon fused in an Acheson furnace',moist:'L',uv:'L',chem:'E',tough:'L',ductile:false,note:'The default high-performance reinforcement for metal- and ceramic-matrix composites.',nu:0.16,color:'#3a3a3c',astm:"ASTM C1161 (flexural), ASTM C1198 (elastic modulus)"},
+{id:'si3n4',name:'Silicon Nitride',cat:'ceramic',matrix:true,reinf:true,rho:3.2,E:310,ts:700,elong:0.3,k:30,cte:3.3,maxT:1400,procT:1800,elec:'I',costLo:15,costHi:30,source:'Silicon powder nitrided at high temperature',moist:'L',uv:'L',chem:'E',tough:'M',ductile:false,note:'Tougher than most technical ceramics; used in bearings and turbine parts.',nu:0.27,color:'#4a4b4d',astm:"ASTM C1161 (flexural), ASTM C1198 (elastic modulus)"},
+{id:'glass',name:'Soda-Lime Glass',cat:'ceramic',matrix:false,reinf:true,rho:2.5,E:70,ts:50,elong:0.2,k:1,cte:9,maxT:500,procT:null,elec:'I',costLo:0.5,costHi:1.5,source:'Silica sand, soda ash and limestone, melted in a furnace',moist:'M',uv:'L',chem:'G',tough:'L',ductile:false,note:'Rarely a bulk matrix — its main composite role is as the precursor to glass fibre.',nu:0.22,color:'#cfe0df',astm:"ASTM C1161 analog, ASTM C770 (density)"},
+{id:'b4c',name:'Boron Carbide',cat:'ceramic',matrix:false,reinf:true,rho:2.52,E:460,ts:350,elong:0.2,k:30,cte:5,maxT:2000,procT:null,elec:'S',costLo:50,costHi:100,source:'Carbothermal reduction of boric acid at extreme temperature',moist:'L',uv:'L',chem:'E',tough:'L',ductile:false,note:'The third-hardest material known — used in body armour and neutron shielding.',nu:0.17,color:'#232326',astm:"ASTM C1161 (flexural), ASTM C1198 (elastic modulus)"},
+
+// ---- NATURAL FIBRES ----
+{id:'cotton',name:'Cotton Fibre',cat:'natfiber',matrix:false,reinf:true,rho:1.54,E:6,ts:400,elong:7,k:0.04,cte:8,maxT:150,procT:null,elec:'I',costLo:1.5,costHi:3,source:'Ginned from Gossypium plant bolls',moist:'H',uv:'H',chem:'P',tough:'M',ductile:false,note:'Soft and breathable; used mainly in low-load biocomposites and textiles.',nu:0.3,color:'#f2ede1',astm:"ASTM D3822 (single-fiber tensile), ASTM D1577 (linear density)"},
+{id:'jute',name:'Jute Fibre',cat:'natfiber',matrix:false,reinf:true,rho:1.3,E:30,ts:450,elong:1.8,k:0.05,cte:10,maxT:170,procT:null,elec:'I',costLo:0.4,costHi:0.8,source:'Retted stem of the Corchorus plant, mainly South Asia',moist:'H',uv:'H',chem:'P',tough:'M',ductile:false,note:'The cheapest common natural fibre — widely used in automotive door panels.',nu:0.3,color:'#b89a5e',astm:"ASTM D3822 (single-fiber tensile), ASTM D1577 (linear density)"},
+{id:'hemp',name:'Hemp Fibre',cat:'natfiber',matrix:false,reinf:true,rho:1.48,E:35,ts:550,elong:2,k:0.05,cte:9,maxT:180,procT:null,elec:'I',costLo:1,costHi:2,source:'Retted bast fibre of Cannabis sativa stalks',moist:'H',uv:'H',chem:'P',tough:'M',ductile:false,note:'Strong bast fibre with growing use in automotive and construction panels.',nu:0.3,color:'#c2b280',astm:"ASTM D3822 (single-fiber tensile), ASTM D1577 (linear density)"},
+{id:'flax',name:'Flax Fibre',cat:'natfiber',matrix:false,reinf:true,rho:1.5,E:60,ts:800,elong:2.4,k:0.05,cte:9,maxT:180,procT:null,elec:'I',costLo:1.5,costHi:3,source:'Retted stem of Linum usitatissimum, mainly grown in Europe',moist:'H',uv:'H',chem:'P',tough:'M',ductile:false,note:'The stiffest of the common bast fibres.',nu:0.3,color:'#d9cfa0',astm:"ASTM D3822 (single-fiber tensile), ASTM D1577 (linear density)"},
+{id:'bamboo',name:'Bamboo Fibre',cat:'natfiber',matrix:false,reinf:true,rho:1.25,E:30,ts:500,elong:2,k:0.03,cte:8,maxT:200,procT:null,elec:'I',costLo:1,costHi:2,source:'Steam-exploded from bamboo culms, mainly East/SE Asia',moist:'H',uv:'H',chem:'P',tough:'M',ductile:false,note:'Fast-renewing and increasingly used in green building composites.',nu:0.3,color:'#cbb97a',astm:"ASTM D3822 (single-fiber tensile), ASTM D1577 (linear density)"},
+{id:'silk',name:'Silk Fibre',cat:'natfiber',matrix:false,reinf:true,rho:1.3,E:15,ts:600,elong:20,k:0.05,cte:8,maxT:150,procT:null,elec:'I',costLo:30,costHi:80,source:'Reeled cocoon filament of the Bombyx mori silkworm',moist:'M',uv:'H',chem:'F',tough:'H',ductile:false,note:'Exceptional toughness for a natural fibre; used in biomedical scaffolds.',nu:0.3,color:'#f0ead9',astm:"ASTM D3822 (single-fiber tensile), ASTM D1577 (linear density)"},
+{id:'wool',name:'Wool Fibre',cat:'natfiber',matrix:false,reinf:true,rho:1.31,E:3,ts:150,elong:35,k:0.04,cte:10,maxT:130,procT:null,elec:'I',costLo:3,costHi:8,source:'Sheared sheep fleece, scoured and carded',moist:'H',uv:'H',chem:'F',tough:'M',ductile:false,note:'Elastic protein fibre with niche use in acoustic/insulation composites.',nu:0.3,color:'#ece3d0',astm:"ASTM D3822 (single-fiber tensile), ASTM D1577 (linear density)"},
+{id:'basalt',name:'Basalt Fibre',cat:'natfiber',matrix:false,reinf:true,rho:2.7,E:90,ts:4100,elong:3.15,k:0.035,cte:8,maxT:600,procT:null,elec:'I',costLo:2,costHi:4,source:'Molten basalt rock extruded through platinum bushings',moist:'L',uv:'L',chem:'G',tough:'M',ductile:false,note:'Made straight from volcanic rock — glass-fibre-like performance with better heat resistance.',nu:0.25,color:'#2f2f31',astm:"ASTM D3822 (single-fiber tensile), ASTM D2343 (glass-fiber analog)"},
+
+// ---- SYNTHETIC FIBRES ----
+{id:'carbonfiber',name:'Carbon Fibre',cat:'synfiber',matrix:false,reinf:true,rho:1.78,E:230,ts:3500,elong:1.5,k:10,cte:-0.5,maxT:400,procT:null,elec:'C',costLo:20,costHi:40,source:'Oxidised and carbonised from PAN precursor in inert-atmosphere furnaces',moist:'L',uv:'M',chem:'E',tough:'L',ductile:false,note:'Highest common stiffness-to-weight ratio; brittle and notch-sensitive.',nu:0.2,color:'#141414',astm:"ASTM D4018 (tow properties), ASTM D3822 (single-fiber)"},
+{id:'eglass',name:'E-Glass Fibre',cat:'synfiber',matrix:false,reinf:true,rho:2.58,E:76,ts:3400,elong:4.8,k:1.3,cte:5.4,maxT:550,procT:null,elec:'I',costLo:1.5,costHi:3,source:'Molten borosilicate glass drawn through bushings',moist:'M',uv:'L',chem:'G',tough:'M',ductile:false,note:'The composite industry workhorse — cheap, strong, and electrically insulating.',nu:0.22,color:'#e9e6dc',astm:"ASTM D2343 (yarn tensile), ASTM D578 (specification)"},
+{id:'aramid',name:'Aramid Fibre (Kevlar-type)',cat:'synfiber',matrix:false,reinf:true,rho:1.44,E:131,ts:3600,elong:2.8,k:0.04,cte:-2,maxT:450,procT:null,elec:'I',costLo:20,costHi:35,source:'Spun from a liquid-crystal polymer solution',moist:'M',uv:'H',chem:'G',tough:'H',ductile:false,note:'Superb impact and ballistic toughness; comparatively weak in compression.',nu:0.36,color:'#c9a227',astm:"ASTM D885 (yarn/cord tensile), ASTM D3822 (single-fiber)"},
+{id:'uhmwpe',name:'UHMWPE Fibre (Dyneema-type)',cat:'synfiber',matrix:false,reinf:true,rho:0.97,E:120,ts:3400,elong:3.5,k:20,cte:-12,maxT:144,procT:null,elec:'I',costLo:25,costHi:45,source:'Gel-spun ultra-high-molecular-weight polyethylene',moist:'L',uv:'M',chem:'E',tough:'H',ductile:false,note:'The lightest and toughest common fibre — but unusable much above 100°C.',nu:0.46,color:'#e8e6df',astm:"ASTM D885 (yarn/cord tensile), ASTM D3822 (single-fiber)"},
+{id:'boron',name:'Boron Fibre',cat:'synfiber',matrix:false,reinf:true,rho:2.57,E:400,ts:3600,elong:0.8,k:38,cte:4.5,maxT:2000,procT:null,elec:'S',costLo:500,costHi:1000,source:'Chemical vapour deposition of boron onto a tungsten filament',moist:'L',uv:'L',chem:'G',tough:'L',ductile:false,note:'Extreme cost restricts it to niche military and aerospace metal-matrix use.',nu:0.21,color:'#4a4a4a',astm:"ASTM D3822 analog (single-fiber tensile)"},
+
+// ---- NATURAL POLYMERS ----
+{id:'natrubber',name:'Natural Rubber',cat:'natpoly',matrix:true,reinf:false,rho:0.92,E:0.02,ts:25,elong:600,k:0.13,cte:200,maxT:80,procT:160,elec:'I',costLo:1.5,costHi:2.5,source:'Coagulated latex tapped from Hevea brasiliensis trees',moist:'L',uv:'H',chem:'P',tough:'H',ductile:true,note:'Classic elastomer matrix — steel- or textile-cord-reinforced tyres.',nu:0.49,color:'#8a5a34',astm:"ASTM D412 (tensile), ASTM D297 (analysis)"},
+{id:'cellulose',name:'Cellulose (nanofibril)',cat:'natpoly',matrix:false,reinf:true,rho:1.5,E:90,ts:500,elong:2,k:0.05,cte:10,maxT:220,procT:null,elec:'I',costLo:1,costHi:3,source:'Extracted from wood pulp or plant cell walls',moist:'H',uv:'M',chem:'F',tough:'M',ductile:false,note:'An emerging nanoscale reinforcement for bioplastics.',nu:0.3,color:'#efe9d8',astm:"ASTM D3822 (nanofibril tensile, single-filament analog)"},
+{id:'lignin',name:'Lignin',cat:'natpoly',matrix:true,reinf:false,rho:1.35,E:3,ts:50,elong:2,k:0.2,cte:30,maxT:180,procT:170,elec:'I',costLo:0.5,costHi:1.5,source:'Byproduct of wood pulping (kraft process)',moist:'M',uv:'H',chem:'F',tough:'L',ductile:false,note:'A cheap bio-based binder that browns and embrittles in sunlight.',nu:0.3,color:'#4a2e1d',astm:"ASTM D638 analog (bulk tensile)"},
+{id:'shellac',name:'Shellac',cat:'natpoly',matrix:true,reinf:false,rho:1.15,E:4,ts:40,elong:2,k:0.2,cte:80,maxT:80,procT:130,elec:'I',costLo:8,costHi:15,source:'Resin secreted by the lac insect (Kerria lacca)',moist:'H',uv:'M',chem:'P',tough:'L',ductile:false,note:'A historic natural varnish/binder resin, sensitive to moisture and alcohol.',nu:0.35,color:'#8a4a1c',astm:"ASTM D638 analog (bulk tensile)"},
+{id:'chitin',name:'Chitin',cat:'natpoly',matrix:true,reinf:false,rho:1.4,E:6,ts:60,elong:3,k:0.2,cte:40,maxT:200,procT:150,elec:'I',costLo:10,costHi:25,source:'Extracted from crustacean shells or fungal cell walls',moist:'M',uv:'M',chem:'F',tough:'M',ductile:false,note:'A biomedical and sustainable-packaging matrix candidate.',nu:0.3,color:'#e9e2cf',astm:"ASTM D638 analog (bulk tensile)"},
+
+// ---- SYNTHETIC POLYMERS ----
+{id:'epoxy',name:'Epoxy Resin',cat:'synpoly',matrix:true,reinf:false,rho:1.2,E:3.5,ts:80,elong:4,k:0.2,cte:60,maxT:150,procT:150,elec:'I',costLo:3,costHi:8,source:'Bisphenol-A and epichlorohydrin, cured with an amine hardener',moist:'M',uv:'M',chem:'G',tough:'M',ductile:false,note:'The dominant high-performance thermoset matrix for structural composites.',nu:0.35,color:'#e0c98a',astm:"ASTM D638 (tensile), ASTM D792 (density)"},
+{id:'polyester',name:'Unsaturated Polyester',cat:'synpoly',matrix:true,reinf:false,rho:1.2,E:3.5,ts:60,elong:2,k:0.17,cte:100,maxT:100,procT:120,elec:'I',costLo:1.5,costHi:3,source:'Unsaturated dibasic acids and glycols, styrene-diluted',moist:'H',uv:'M',chem:'F',tough:'L',ductile:false,note:'The cheapest common thermoset matrix — boat hulls and storage tanks.',nu:0.37,color:'#e6e0c9',astm:"ASTM D638 (tensile), ASTM D792 (density)"},
+{id:'vinylester',name:'Vinyl Ester Resin',cat:'synpoly',matrix:true,reinf:false,rho:1.15,E:3.4,ts:80,elong:5,k:0.2,cte:70,maxT:130,procT:130,elec:'I',costLo:3,costHi:5,source:'Reaction of epoxy resin with an unsaturated monocarboxylic acid',moist:'L',uv:'M',chem:'E',tough:'M',ductile:false,note:'Best chemical/corrosion resistance among the common thermosets.',nu:0.35,color:'#e3dcc0',astm:"ASTM D638 (tensile), ASTM D792 (density)"},
+{id:'pp',name:'Polypropylene',cat:'synpoly',matrix:true,reinf:false,rho:0.90,E:1.5,ts:35,elong:150,k:0.22,cte:150,maxT:100,procT:200,elec:'I',costLo:1,costHi:2,source:'Polymerised from propylene gas, a petroleum-refining byproduct',moist:'L',uv:'H',chem:'G',tough:'H',ductile:true,note:'Cheap and recyclable — needs UV stabiliser additives for outdoor use.',nu:0.42,color:'#eae6da',astm:"ASTM D638 (tensile), ASTM D792 (density)"},
+{id:'nylon6',name:'Nylon 6',cat:'synpoly',matrix:true,reinf:false,rho:1.14,E:2.8,ts:75,elong:150,k:0.25,cte:90,maxT:120,procT:260,elec:'I',costLo:2.5,costHi:4,source:'Ring-opening polymerisation of caprolactam',moist:'H',uv:'M',chem:'F',tough:'H',ductile:true,note:'Tough engineering thermoplastic that visibly absorbs moisture and swells.',nu:0.39,color:'#e9dfc0',astm:"ASTM D638 (tensile), ASTM D792 (density)"},
+{id:'peek',name:'PEEK',cat:'synpoly',matrix:true,reinf:false,rho:1.32,E:3.6,ts:100,elong:45,k:0.25,cte:47,maxT:260,procT:380,elec:'I',costLo:60,costHi:100,source:'High-purity step-growth polymerisation, specialty chemical suppliers',moist:'L',uv:'L',chem:'E',tough:'H',ductile:true,note:'The elite high-temperature thermoplastic matrix — aerospace and medical parts.',nu:0.38,color:'#c9a876',astm:"ASTM D638 (tensile), ASTM D792 (density)"},
+{id:'phenolic',name:'Phenolic Resin',cat:'synpoly',matrix:true,reinf:false,rho:1.25,E:3,ts:45,elong:1.5,k:0.2,cte:70,maxT:180,procT:170,elec:'I',costLo:1.5,costHi:3,source:'Condensation of phenol and formaldehyde',moist:'L',uv:'L',chem:'G',tough:'L',ductile:false,note:'Outstanding fire and char resistance — used in aircraft interior panels.',nu:0.35,color:'#2b1c12',astm:"ASTM D638 (tensile), ASTM D792 (density)"},
+{id:'pu',name:'Polyurethane',cat:'synpoly',matrix:true,reinf:false,rho:1.2,E:1,ts:40,elong:300,k:0.25,cte:150,maxT:100,procT:100,elec:'I',costLo:2,costHi:4,source:'Reaction of polyols with diisocyanates',moist:'M',uv:'H',chem:'F',tough:'H',ductile:true,note:'Elastomeric matrix used in flexible foam and cast composite parts.',nu:0.45,color:'#e6dcc8',astm:"ASTM D638 (tensile), ASTM D792 (density)"},
+{id:'silicone',name:'Silicone Rubber',cat:'synpoly',matrix:true,reinf:false,rho:1.1,E:0.05,ts:7,elong:400,k:0.2,cte:300,maxT:300,procT:150,elec:'I',costLo:5,costHi:12,source:'Polymerised from siloxane monomers derived from silica',moist:'L',uv:'L',chem:'G',tough:'M',ductile:true,note:'The widest service-temperature range of any common elastomer matrix.',nu:0.47,color:'#e6e3dc',astm:"ASTM D638 (tensile), ASTM D792 (density)"},
+
+// ---- NANO / PARTICULATE FILLERS ----
+{id:'graphene',name:'Graphene',cat:'filler',matrix:false,reinf:true,rho:2.2,E:1000,ts:13000,elong:25,k:5000,cte:-8,maxT:2000,procT:null,elec:'C',costLo:50,costHi:300,source:'Exfoliated from graphite or grown by chemical vapour deposition',moist:'L',uv:'L',chem:'E',tough:'L',ductile:false,note:'Record single-layer properties; dispersing it uniformly at bulk scale is the real challenge.',nu:0.19,color:'#111111',astm:"ASTM WK-series nanomaterial characterization guides"},
+{id:'cnt',name:'Carbon Nanotubes',cat:'filler',matrix:false,reinf:true,rho:1.3,E:1000,ts:11000,elong:10,k:3000,cte:-1,maxT:2000,procT:null,elec:'C',costLo:50,costHi:200,source:'Grown by chemical vapour deposition on catalyst particles',moist:'L',uv:'L',chem:'E',tough:'L',ductile:false,note:'Exceptional nanoscale reinforcement; agglomeration limits achievable loading.',nu:0.2,color:'#0d0d0d',astm:"ASTM D8281 (CNT characterization)"},
+{id:'silica',name:'Fumed Silica',cat:'filler',matrix:false,reinf:true,rho:2.2,E:70,ts:20,elong:0,k:1.4,cte:0.5,maxT:1200,procT:null,elec:'I',costLo:2,costHi:5,source:'Pyrogenic combustion of silicon tetrachloride vapour',moist:'L',uv:'L',chem:'G',tough:'L',ductile:false,note:'A thickening/anti-sag filler with a minimal direct load-bearing role.',nu:0.17,color:'#f0eee6',astm:"ASTM C1274 (surface area/characterization)"},
+{id:'caco3',name:'Calcium Carbonate',cat:'filler',matrix:false,reinf:true,rho:2.71,E:70,ts:0,elong:0,k:3,cte:25,maxT:800,procT:null,elec:'I',costLo:0.1,costHi:0.3,source:'Mined limestone or chalk, ground to fine powder',moist:'L',uv:'L',chem:'F',tough:'L',ductile:false,note:'The cheapest bulking filler — mainly reduces cost and shrinkage, adds little strength.',nu:0.27,color:'#f2f0e8',astm:"ASTM D4218 (filler content), ASTM C25 (analysis)"},
+{id:'nanoclay',name:'Nanoclay',cat:'filler',matrix:false,reinf:true,rho:2.6,E:170,ts:0,elong:0,k:0.3,cte:10,maxT:700,procT:null,elec:'I',costLo:2,costHi:6,source:'Mined montmorillonite bentonite clay, organically modified',moist:'M',uv:'L',chem:'G',tough:'M',ductile:false,note:'Boosts barrier and flame-retardant properties at very low loadings.',nu:0.25,color:'#c9b896',astm:"ASTM D7442 (clay nanocomposite characterization)"},
+];
+
+const CAT_LABELS = {
+  element:'Element', metal:'Metal / Alloy', ceramic:'Ceramic', natfiber:'Natural Fibre',
+  synfiber:'Synthetic Fibre', natpoly:'Natural Polymer', synpoly:'Synthetic Polymer', filler:'Nano / Particulate Filler'
+};
+const CAT_ORDER = ['element','metal','ceramic','natfiber','synfiber','natpoly','synpoly','filler'];
+const byId = id => DATA.find(d=>d.id===id);
+
+/* Currency — internal cost data is modeled in USD; everything is displayed in INR.
+   Rate is an approximate mid-market figure (~₹96/USD, July 2026) and will drift over time. */
+const USD_TO_INR = 96;
+function inr(usdAmount, decimals=0){
+  const val = usdAmount*USD_TO_INR;
+  return '₹' + val.toLocaleString('en-IN', {maximumFractionDigits:decimals, minimumFractionDigits:decimals});
+}
+
+/* =====================================================================
+   ATLAS
+===================================================================== */
+let activeCat = null;
+let searchQuery = '';
+function renderTabs(){
+  const tabsEl = document.getElementById('atlas-tabs');
+  const cats = ['all', ...CAT_ORDER];
+  tabsEl.innerHTML = cats.map(c=>`<div class="tab ${c===activeCat?'active':''}" data-c="${c}">${c==='all'?'All':CAT_LABELS[c]}</div>`).join('');
+  tabsEl.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
+    activeCat = (t.dataset.c===activeCat) ? null : t.dataset.c;
+    renderTabs();renderAtlas();
+  });
+}
+function renderAtlas(){
+  const grid = document.getElementById('atlas-grid');
+  const empty = document.getElementById('atlas-empty');
+  const q = searchQuery.trim().toLowerCase();
+  if(activeCat===null && q===''){
+    grid.innerHTML='';
+    empty.style.display='block';
+    return;
+  }
+  let items = (activeCat===null || activeCat==='all') ? DATA : DATA.filter(d=>d.cat===activeCat);
+  if(q!==''){ items = items.filter(d=>d.name.toLowerCase().includes(q)); }
+  if(items.length===0){
+    grid.innerHTML='';
+    empty.style.display='block';
+    empty.textContent='No materials match that search.';
+    return;
+  }
+  empty.style.display='none';
+  grid.innerHTML = items.map(d=>`
+    <div class="mat-card" data-id="${d.id}">
+      <span class="tag">${CAT_LABELS[d.cat]}</span>
+      <span class="cost-chip">${inr(d.costLo)}-${inr(d.costHi)}/kg</span>
+      <h4>${d.name}</h4>
+      <div class="props">
+        ρ <b>${d.rho} g/cm³</b><br>
+        E <b>${d.E} GPa</b><br>
+        σ <b>${d.ts} MPa</b>
+      </div>
+      <div class="roles-dots">${d.matrix?'<div class="dot m" title="can be matrix"></div>':''}${d.reinf?'<div class="dot r" title="can be reinforcement"></div>':''}</div>
+    </div>
+  `).join('');
+  grid.querySelectorAll('.mat-card').forEach(c=>c.onclick=()=>openDetail(c.dataset.id));
+}
+document.getElementById('atlas-search').addEventListener('input', e=>{
+  searchQuery = e.target.value;
+  document.getElementById('atlas-search-clear').classList.toggle('show', searchQuery.length>0);
+  renderAtlas();
+});
+document.getElementById('atlas-search-clear').addEventListener('click', ()=>{
+  searchQuery = '';
+  document.getElementById('atlas-search').value = '';
+  document.getElementById('atlas-search-clear').classList.remove('show');
+  renderAtlas();
+});
+function openDetail(id){
+  const d = byId(id);
+  const ov = document.getElementById('detail-overlay');
+  document.getElementById('detail-card').innerHTML = `
+    <span class="close" onclick="closeDetail()">CLOSE ✕</span>
+    <span class="eyebrow">${CAT_LABELS[d.cat]}</span>
+    <h3>${d.name}</h3>
+    <div class="detail-grid">
+      <div><span>Density</span>${d.rho} g/cm³</div>
+      <div><span>Tensile Modulus</span>${d.E} GPa</div>
+      <div><span>Tensile Strength</span>${d.ts} MPa</div>
+      <div><span>Strain to Failure</span>${d.elong}%</div>
+      <div><span>Thermal Conductivity</span>${d.k} W/m·K</div>
+      <div><span>CTE</span>${d.cte} ×10⁻⁶/K</div>
+      <div><span>Max Service Temp</span>${d.maxT}°C</div>
+      <div><span>Poisson's Ratio</span>${d.nu}</div>
+      <div><span>Electrical Nature</span>${d.elec==='C'?'Conductor':d.elec==='S'?'Semiconductor':'Insulator'}</div>
+      <div><span>Chemical Resistance</span>${{P:'Poor',F:'Fair',G:'Good',E:'Excellent'}[d.chem]}</div>
+      <div><span>UV Sensitivity</span>${{L:'Low',M:'Medium',H:'High'}[d.uv]}</div>
+      <div><span>Moisture Sensitivity</span>${{L:'Low',M:'Medium',H:'High'}[d.moist]}</div>
+      <div><span>Cost Range</span>${inr(d.costLo)} – ${inr(d.costHi)} / kg</div>
+    </div>
+    <div class="note">${d.note}</div>
+    <div class="source-line"><b>Where it's found / made:</b> ${d.source}</div>
+    <div class="source-line"><b>Characterized per:</b> ${d.astm}</div>
+  `;
+  ov.classList.add('show');
+}
+function closeDetail(){document.getElementById('detail-overlay').classList.remove('show');}
+document.getElementById('detail-overlay').addEventListener('click',e=>{if(e.target.id==='detail-overlay')closeDetail();});
+
+/* =====================================================================
+   WHERE TO BUY — retail pricing & supplier lookup for the current build
+   (distinct from raw/industrial cost used in the Forge's cost estimate —
+   this reflects realistic small-quantity retail pricing and named vendors)
+===================================================================== */
+const RETAIL_MULT = {element:2.2, metal:2, ceramic:3, natfiber:2.5, synfiber:1.6, natpoly:2.5, synpoly:1.8, filler:5};
+const RETAIL_SRC = {
+  element:'OnlineMetals.com · McMaster-Carr · local metal suppliers',
+  metal:'OnlineMetals.com · McMaster-Carr · metal distributors',
+  ceramic:'US Research Nanomaterials · Reade Advanced Materials · Amazon',
+  natfiber:'Amazon · Etsy fiber shops · local fabric/craft suppliers',
+  synfiber:'Rock West Composites · Fibre Glast Developments · ACP Composites',
+  natpoly:'Amazon · specialty biopolymer suppliers · Alibaba',
+  synpoly:'US Composites · TAP Plastics · McMaster-Carr · Amazon',
+  filler:'US Research Nanomaterials · Sigma-Aldrich · Graphene Supermarket'
+};
+const RETAIL_OVERRIDE = {
+  carbonfiber:'Rock West Composites · Fibre Glast Developments · DragonPlate',
+  eglass:'Fibre Glast Developments · US Composites · Amazon',
+  aramid:'Rock West Composites · Fibre Glast Developments',
+  uhmwpe:'Rock West Composites · DSM Dyneema resellers',
+  boron:'Specialty Materials Inc. — aerospace-allocated, not open retail',
+  basalt:'Basaltex · Fibre Glast Developments',
+  epoxy:'West System · US Composites · Amazon',
+  polyester:'US Composites · TAP Plastics',
+  vinylester:'US Composites · Composites One',
+  peek:'Curbell Plastics · McMaster-Carr (rod/sheet stock)',
+  phenolic:'McMaster-Carr · Professional Plastics',
+  pp:'McMaster-Carr · TAP Plastics · Amazon',
+  nylon6:'McMaster-Carr · Curbell Plastics',
+  pu:'Smooth-On · Amazon',
+  silicone:'Smooth-On · Amazon',
+  graphene:'Graphene Supermarket · Sigma-Aldrich',
+  cnt:'Cheap Tubes Inc. · Sigma-Aldrich',
+  silica:'Sigma-Aldrich · Amazon (Cab-O-Sil)',
+  caco3:'Amazon · local masonry/pottery suppliers',
+  nanoclay:'Sigma-Aldrich · Nanocor resellers',
+  w:'Midwest Tungsten Service · McMaster-Carr',
+  ti:'OnlineMetals.com · titanium specialty distributors',
+  tialloy:'OnlineMetals.com · aerospace metal distributors',
+  inconel:'OnlineMetals.com · specialty superalloy distributors',
+  silk:'Etsy · specialty silk fiber suppliers',
+};
+function retailInfo(d){
+  const mult = RETAIL_MULT[d.cat]||2;
+  return {
+    buyLo: d.costLo*mult,
+    buyHi: d.costHi*mult*1.3,
+    buySrc: RETAIL_OVERRIDE[d.id] || RETAIL_SRC[d.cat]
+  };
+}
+function renderLedger(){
+  const m = byId(document.getElementById('sel-matrix').value);
+  const reinfIds = reinforcements.map(row=>row.id);
+  const items = [m, ...reinfIds.map(byId)].filter(Boolean).map(d=>({...d, ...retailInfo(d)})).sort((a,b)=>a.buyLo-b.buyLo);
+  document.getElementById('ledger-body').innerHTML = items.map(d=>`
+    <tr>
+      <td>${d.name}</td>
+      <td class="mono" style="color:var(--bone-dim);font-size:12px;">${CAT_LABELS[d.cat]}</td>
+      <td class="mono">${inr(d.buyLo)} – ${inr(d.buyHi)}</td>
+      <td class="source-cell">${d.buySrc}</td>
+    </tr>
+  `).join('');
+}
+
+/* =====================================================================
+   FORGE — populate selectors
+===================================================================== */
+const matrixOptions = DATA.filter(d=>d.matrix);
+const reinfOptions = DATA.filter(d=>d.reinf);
+function fillSelect(sel, opts, defaultId){
+  sel.innerHTML = opts.map(d=>`<option value="${d.id}" ${d.id===defaultId?'selected':''}>${d.name} — ${CAT_LABELS[d.cat]}</option>`).join('');
+}
+fillSelect(document.getElementById('sel-matrix'), matrixOptions, 'epoxy');
+
+/* =====================================================================
+   HARDENERS / CURING AGENTS
+   ratio: typical mix ratio by weight (informational)
+   cureTemp/postCure: °C — used as the effective processing temperature
+   tgShift: °C added to (or subtracted from) the matrix's usable max
+            service temperature once cured with this hardener
+   costBump: approximate USD/kg added to the matrix's raw cost
+===================================================================== */
+const HARDENERS = {
+  epoxy: [
+    {id:'teta', name:'Triethylenetetramine (TETA) — aliphatic amine', ratio:'100:12 by weight', cureTemp:25, postCure:80, tgShift:-10, costBump:0.6, note:'Room-temperature cure, fast pot life (~20 min). Tough but the lowest heat resistance of the three.'},
+    {id:'ipda', name:'Isophorone Diamine (IPDA) — cycloaliphatic amine', ratio:'100:30 by weight', cureTemp:25, postCure:120, tgShift:5, costBump:1.4, note:'Slower cure, better UV/weathering resistance, higher usable temperature than TETA.'},
+    {id:'anhydride', name:'Methyl Tetrahydrophthalic Anhydride (MTHPA)', ratio:'100:85 by weight', cureTemp:120, postCure:150, tgShift:25, costBump:1.0, note:'Needs an elevated-temperature cure oven. Best heat resistance and electrical properties, but more brittle.'}
+  ],
+  polyester: [
+    {id:'mekp', name:'MEKP (Methyl Ethyl Ketone Peroxide) + cobalt accelerator', ratio:'1.5–2 phr', cureTemp:20, postCure:60, tgShift:0, costBump:0.3, note:'Standard room-temperature catalyst system for hand lay-up.'}
+  ],
+  vinylester: [
+    {id:'mekp-ve', name:'MEKP + cobalt accelerator', ratio:'1.25–1.5 phr', cureTemp:20, postCure:80, tgShift:0, costBump:0.3, note:'Same peroxide-cure chemistry as polyester, tuned for vinyl ester\'s methacrylate end groups.'}
+  ],
+  phenolic: [
+    {id:'hexamine', name:'Hexamethylenetetramine (Hexamine)', ratio:'8–12 phr', cureTemp:150, postCure:170, tgShift:0, costBump:0.4, note:'Classic novolac hardener — releases ammonia and water during cure, needs venting.'}
+  ],
+  pu: [
+    {id:'mdi', name:'MDI (Diphenylmethane Diisocyanate)', ratio:'~100:45 by weight (index-dependent)', cureTemp:25, postCure:80, tgShift:0, costBump:1.2, note:'Standard rigid cast/foam PU isocyanate; fast reactivity.'},
+    {id:'tdi', name:'TDI (Toluene Diisocyanate)', ratio:'~100:35 by weight', cureTemp:25, postCure:80, tgShift:-5, costBump:1.5, note:'More flexible, higher elongation, more volatile and hazardous to handle.'}
+  ],
+  natrubber: [
+    {id:'sulfur', name:'Sulfur + accelerator (vulcanization)', ratio:'2–3 phr sulfur', cureTemp:150, postCure:160, tgShift:20, costBump:0.2, note:'Classic vulcanization system — crosslinks the rubber, dramatically raising strength and elastic recovery.'}
+  ],
+  silicone: [
+    {id:'pt-cat', name:'Platinum catalyst (addition cure)', ratio:'~10:1 base:catalyst', cureTemp:25, postCure:100, tgShift:0, costBump:2.0, note:'Clean addition cure with no by-products; food/medical-grade compatible.'},
+    {id:'peroxide-cat', name:'Peroxide catalyst (condensation cure)', ratio:'~0.5–1 phr', cureTemp:100, postCure:150, tgShift:10, costBump:0.5, note:'Needs heat to fully cure; releases volatile by-products as it crosslinks.'}
+  ]
+};
+let hardenerChoice = null; // id of the currently selected hardener, or null
+function renderHardenerBlock(){
+  const m = byId(document.getElementById('sel-matrix').value);
+  const opts = HARDENERS[m.id];
+  const block = document.getElementById('hardener-block');
+  if(!opts){
+    hardenerChoice = null;
+    const why = (m.cat==='synpoly' && ['pp','nylon6','peek'].includes(m.id)) ? 'a thermoplastic — it solidifies on cooling rather than curing chemically.'
+              : 'processed by drying, heat, or solvent evaporation rather than a chemical curing agent.';
+    block.innerHTML = `<div class="hardener-note">No curing agent needed — ${m.name} is ${why}</div>`;
+    return;
+  }
+  if(!hardenerChoice || !opts.find(h=>h.id===hardenerChoice)) hardenerChoice = opts[0].id;
+  block.innerHTML = `
+    <select id="sel-hardener">${opts.map(h=>`<option value="${h.id}" ${h.id===hardenerChoice?'selected':''}>${h.name}</option>`).join('')}</select>
+    <div class="hardener-note" id="hardener-note"></div>
+  `;
+  document.getElementById('sel-hardener').onchange = e=>{ hardenerChoice=e.target.value; renderHardenerNote(); runForge(); };
+  renderHardenerNote();
+}
+function renderHardenerNote(){
+  const m = byId(document.getElementById('sel-matrix').value);
+  const h = (HARDENERS[m.id]||[]).find(x=>x.id===hardenerChoice);
+  if(!h) return;
+  document.getElementById('hardener-note').innerHTML = `${h.note}<span class="hardener-meta">Mix ratio ${h.ratio} · cures at ${h.cureTemp}°C, post-cure ${h.postCure}°C</span>`;
+}
+document.getElementById('sel-matrix').onchange = ()=>{ renderHardenerBlock(); runForge(); };
+renderHardenerBlock();
+
+/* =====================================================================
+   REINFORCEMENT STACK — supports multiple simultaneous reinforcements
+   (hybrid composites), each with its own material, architecture and
+   volume fraction, sharing a combined budget of up to 70% total.
+===================================================================== */
+const MAX_REINF_ROWS = 3;
+const TOTAL_VF_BUDGET = 70;
+let reinforcements = [{id:'carbonfiber', vf:35, orientation:'uni'}];
+
+function usedVf(excludeIdx){
+  return reinforcements.reduce((sum,r,i)=> i===excludeIdx ? sum : sum+r.vf, 0);
+}
+function renderReinforcementRows(){
+  const list = document.getElementById('reinforcement-list');
+  const used = usedVf(-1);
+  document.getElementById('vf-budget-readout').textContent = `${used}% of ${TOTAL_VF_BUDGET}% used`;
+  list.innerHTML = reinforcements.map((row,i)=>{
+    const usedByOthers = usedVf(i);
+    const roomLeft = Math.max(2, TOTAL_VF_BUDGET - usedByOthers);
+    const takenIds = reinforcements.filter((r,j)=>j!==i).map(r=>r.id);
+    const opts = reinfOptions.filter(d=>!takenIds.includes(d.id) || d.id===row.id);
+    return `
+    <div class="reinf-row" data-idx="${i}">
+      <div class="reinf-row-head">
+        <span class="reinf-row-title">Reinforcement ${i+1}</span>
+        ${reinforcements.length>1 ? `<span class="reinf-row-remove" data-remove="${i}">✕ remove</span>` : ''}
+      </div>
+      <select data-field="id" data-idx="${i}">${opts.map(d=>`<option value="${d.id}" ${d.id===row.id?'selected':''}>${d.name} — ${CAT_LABELS[d.cat]}</option>`).join('')}</select>
+      <span class="sub-label">Architecture</span>
+      <select data-field="orientation" data-idx="${i}">
+        <option value="uni" ${row.orientation==='uni'?'selected':''}>Unidirectional</option>
+        <option value="woven" ${row.orientation==='woven'?'selected':''}>Woven 0/90°</option>
+        <option value="random" ${row.orientation==='random'?'selected':''}>Random / chopped</option>
+        <option value="particulate" ${row.orientation==='particulate'?'selected':''}>Particulate</option>
+      </select>
+      <span class="sub-label">Volume fraction — <span class="vf-readout">${row.vf}%</span> (max ${roomLeft}%)</span>
+      <input type="range" min="2" max="${roomLeft}" value="${Math.min(row.vf,roomLeft)}" data-field="vf" data-idx="${i}">
+    </div>`;
+  }).join('');
+
+  list.querySelectorAll('select[data-field="id"]').forEach(sel=>{
+    sel.onchange = e=>{ reinforcements[+e.target.dataset.idx].id = e.target.value; renderReinforcementRows(); runForge(); };
+  });
+  list.querySelectorAll('select[data-field="orientation"]').forEach(sel=>{
+    sel.onchange = e=>{ reinforcements[+e.target.dataset.idx].orientation = e.target.value; runForge(); };
+  });
+  list.querySelectorAll('input[data-field="vf"]').forEach(inp=>{
+    inp.oninput = e=>{
+      const idx = +e.target.dataset.idx;
+      reinforcements[idx].vf = Number(e.target.value);
+      const row = e.target.closest('.reinf-row');
+      row.querySelector('.vf-readout').textContent = e.target.value+'%';
+      document.getElementById('vf-budget-readout').textContent = `${usedVf(-1)}% of ${TOTAL_VF_BUDGET}% used`;
+      runForge();
+    };
+  });
+  list.querySelectorAll('[data-remove]').forEach(btn=>{
+    btn.onclick = ()=>{
+      reinforcements.splice(+btn.dataset.remove,1);
+      renderReinforcementRows(); runForge();
+    };
+  });
+
+  const addBtn = document.getElementById('add-reinf-btn');
+  const full = reinforcements.length>=MAX_REINF_ROWS || used>=TOTAL_VF_BUDGET-1;
+  addBtn.classList.toggle('disabled', full);
+  addBtn.textContent = reinforcements.length>=MAX_REINF_ROWS ? `Maximum of ${MAX_REINF_ROWS} reinforcements` : (used>=TOTAL_VF_BUDGET-1 ? 'Volume fraction budget full' : '+ Add another reinforcement');
+}
+document.getElementById('add-reinf-btn').onclick = ()=>{
+  if(reinforcements.length>=MAX_REINF_ROWS) return;
+  const used = usedVf(-1);
+  if(used>=TOTAL_VF_BUDGET-1) return;
+  const room = TOTAL_VF_BUDGET-used;
+  const takenIds = reinforcements.map(r=>r.id);
+  const nextMat = reinfOptions.find(d=>!takenIds.includes(d.id)) || reinfOptions[0];
+  reinforcements.push({id:nextMat.id, vf:Math.min(15,room), orientation:'uni'});
+  renderReinforcementRows(); runForge();
+};
+renderReinforcementRows();
+
+const SCENARIOS = [
+  {id:'heat',label:'Elevated Heat'},
+  {id:'cold',label:'Cryogenic Cold'},
+  {id:'moisture',label:'Humidity / Immersion'},
+  {id:'uv',label:'Prolonged Sunlight'},
+  {id:'fatigue',label:'Cyclic Loading'},
+  {id:'impact',label:'Sudden Impact'},
+  {id:'chemical',label:'Chemical Exposure'},
+];
+let activeScenario = 'heat';
+document.getElementById('scenario-row').innerHTML = SCENARIOS.map(s=>`<div class="seg-btn ${s.id==='heat'?'active':''}" data-s="${s.id}">${s.label}</div>`).join('');
+document.querySelectorAll('#scenario-row .seg-btn').forEach(b=>{
+  b.onclick=()=>{
+    document.querySelectorAll('#scenario-row .seg-btn').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active'); activeScenario=b.dataset.s; runForge();
+  };
+});
+
+/* =====================================================================
+   COMPOSITE MICROMECHANICS ENGINE
+===================================================================== */
+function halpinTsai(Em, Er, Vf, xi){
+  const eta = (Er/Em - 1)/(Er/Em + xi);
+  return Em*(1+xi*eta*Vf)/(1-eta*Vf);
+}
+// sequential/nested Halpin-Tsai: folds N reinforcements into one isotropic
+// blended value by treating each addition as reinforcing the *running*
+// matrix-so-far. Reduces exactly to the plain 2-phase Halpin-Tsai formula
+// when there is only one reinforcement.
+function sequentialHalpinTsai(baseValue, Vbase, reinfList, propKey){
+  let running = baseValue, runningVol = Vbase;
+  reinfList.forEach(x=>{
+    const localVf = x.vf/(runningVol + x.vf);
+    running = halpinTsai(running, x.mat[propKey], localVf, 2);
+    runningVol += x.vf;
+  });
+  return running;
+}
+
+function computeComposite(m, hardener, reinfList){
+  const VfTotal = reinfList.reduce((s,x)=>s+x.vf,0);
+  const Vm = 1-VfTotal;
+  const matMaxT = m.maxT + (hardener ? hardener.tgShift : 0);
+  const matProcT = hardener ? Math.max(m.procT||0, hardener.postCure) : m.procT;
+
+  const rho = Vm*m.rho + reinfList.reduce((s,x)=>s+x.vf*x.mat.rho,0);
+
+  const E1 = Vm*m.E + reinfList.reduce((s,x)=>s+x.vf*x.mat.E,0);   // Voigt, generalizes directly
+  const E2 = sequentialHalpinTsai(m.E, Vm, reinfList, 'E');          // nested Halpin-Tsai, transverse/isotropic
+
+  // architecture blend: each reinforcement contributes its own (E1,E2) mix
+  // weighted by its share of the total reinforcement volume
+  const archWeight = o => o==='uni' ? [1,0] : o==='woven' ? [0.5,0.5] : o==='random' ? [0.375,0.625] : [0,1];
+  let wE1=0, wE2=0;
+  reinfList.forEach(x=>{ const [a,b]=archWeight(x.orientation); const share=x.vf/VfTotal; wE1+=share*a; wE2+=share*b; });
+  const E_eff = wE1*E1 + wE2*E2;
+
+  // --- STRENGTH -----------------------------------------------------------
+  // Fibre-type rows: strain-compatibility modified rule of mixtures
+  // (Kelly–Tyson / Hull & Clyne), governed by whichever constituent —
+  // matrix or any single reinforcement — reaches its failure strain first.
+  // Particulate rows: Nicolais–Narkis knockdown applied to the matrix term,
+  // since rigid particles concentrate stress rather than share load.
+  const fibreRows = reinfList.filter(x=>x.orientation!=='particulate');
+  const particulateRows = reinfList.filter(x=>x.orientation==='particulate');
+
+  let matrixTs = m.ts;
+  particulateRows.forEach(x=>{ matrixTs = Math.max(matrixTs*(1-1.21*Math.pow(x.vf,2/3)), 0.15*m.ts); });
+
+  let ts, strengthModel, failureMode;
+  if(fibreRows.length===0){
+    ts = matrixTs;
+    strengthModel = 'Nicolais–Narkis equation — particulate reinforcement concentrates stress rather than sharing load, so the composite strength is bounded by the (knocked-down) matrix alone.';
+    failureMode = 'Matrix-controlled — cracks nucleate at the particle/matrix interface';
+  } else {
+    const epsM = m.elong/100;
+    const strains = fibreRows.map(x=>x.mat.elong/100).concat([epsM]);
+    const governingStrain = Math.min(...strains);
+    const etaOf = o => o==='uni' ? 1.0 : (o==='woven' ? 0.375 : 0.2);
+    const fibreContribution = fibreRows.reduce((s,x)=> s + etaOf(x.orientation)*x.vf*Math.min(x.mat.E*1000*governingStrain, x.mat.ts), 0);
+    const matrixStressAtGoverning = Math.min(m.E*1000*governingStrain, matrixTs);
+    ts = fibreContribution + Vm*matrixStressAtGoverning;
+    const governingIsMatrix = governingStrain===epsM && fibreRows.every(x=>x.mat.elong/100 >= epsM);
+    failureMode = governingIsMatrix
+      ? 'Matrix-controlled — the binder reaches its failure strain first, cracks, and sheds load to the reinforcement'
+      : 'Fibre-controlled — the most strain-limited reinforcement fails first, triggering load redistribution';
+    strengthModel = `Strain-compatibility modified rule of mixtures (Kelly–Tyson / Hull & Clyne) across all fibre-type rows, using Krenchel orientation efficiency factors, governed by a limiting strain of ${(governingStrain*100).toFixed(2)}%${particulateRows.length? ' — matrix term additionally knocked down by the Nicolais–Narkis particulate effect.':'.'}`;
+  }
+
+  const k1 = Vm*m.k + reinfList.reduce((s,x)=>s+x.vf*x.mat.k,0);
+  const k2 = 1/(Vm/m.k + reinfList.reduce((s,x)=>s+x.vf/x.mat.k,0));
+  const k_iso = sequentialHalpinTsai(m.k, Vm, reinfList, 'k');
+  const kArchWeight = o => o==='uni' ? [1,0,0] : o==='woven'||o==='random' ? [0.5,0.5,0] : [0,0,1];
+  let wk1=0, wk2=0, wk3=0;
+  reinfList.forEach(x=>{ const [a,b,c]=kArchWeight(x.orientation); const share=x.vf/VfTotal; wk1+=share*a; wk2+=share*b; wk3+=share*c; });
+  const k_eff = wk1*k1 + wk2*k2 + wk3*k_iso;
+
+  // --- CTE ---  Schapery's equations, generalized to N phases
+  const sumViEi = reinfList.reduce((s,x)=>s+x.vf*x.mat.E,0);
+  const cte1 = (Vm*m.E*m.cte + reinfList.reduce((s,x)=>s+x.vf*x.mat.E*x.mat.cte,0)) / (Vm*m.E + sumViEi);
+  const nu12 = Vm*m.nu + reinfList.reduce((s,x)=>s+x.vf*x.mat.nu,0);
+  const cte2 = (1+m.nu)*m.cte*Vm + reinfList.reduce((s,x)=>s+(1+x.mat.nu)*x.mat.cte*x.vf,0) - cte1*nu12;
+  let wc1=0, wc2=0;
+  reinfList.forEach(x=>{ const share=x.vf/VfTotal; if(x.orientation==='uni'){ wc1+=share; } else { wc2+=share; } });
+  const cte_eff = wc1*cte1 + wc2*((cte1+cte2)/2);
+
+  const maxTemp = Math.min(matMaxT, ...reinfList.map(x=>x.mat.maxT));
+
+  let electrical = 'Insulating';
+  const conductiveRows = reinfList.filter(x=>x.mat.elec==='C');
+  if(m.elec==='C'){ electrical = 'Conductive — metallic matrix dominates'; }
+  else if(conductiveRows.length){
+    const totalConductiveVf = conductiveRows.reduce((s,x)=>s+x.vf,0);
+    const percOf = o => o==='uni'?0.12:o==='woven'?0.15:o==='random'?0.20:0.25;
+    const minPerc = Math.min(...conductiveRows.map(x=>percOf(x.orientation)));
+    electrical = totalConductiveVf>=minPerc
+      ? 'Conductive — reinforcement network exceeds the electrical percolation threshold'
+      : 'Mostly insulating — conductive filler present but below the percolation threshold for a continuous network';
+  }
+
+  const totalVolMass = Vm*m.rho + reinfList.reduce((s,x)=>s+x.vf*x.mat.rho,0);
+  const massM = (Vm*m.rho)/totalVolMass;
+  const massRows = reinfList.map(x=>({mat:x.mat, mass:(x.vf*x.mat.rho)/totalVolMass}));
+  const hardenerCostBump = hardener ? hardener.costBump : 0;
+  const rawCostLo = massM*(m.costLo+hardenerCostBump) + massRows.reduce((s,x)=>s+x.mass*x.mat.costLo,0);
+  const rawCostHi = massM*(m.costHi+hardenerCostBump) + massRows.reduce((s,x)=>s+x.mass*x.mat.costHi,0);
+  const costLo = rawCostLo*1.15;
+  const costHi = rawCostHi*1.6;
+
+  return {rho,E1,E2,E_eff,ts,strengthModel,failureMode,k1,k2,k_iso,k_eff,cte1,cte2,nu12,cte_eff,maxTemp,matMaxT,matProcT,electrical,costLo,costHi,massM,massRows,VfTotal,Vm};
+}
+
+function buildStandardsCard(m,r,reinfList){
+  const matrixIsPolymer = m.cat==='synpoly'||m.cat==='natpoly';
+  const matrixIsMetal = m.cat==='metal'||m.cat==='element';
+  const tensileStd = matrixIsPolymer ? 'ASTM D3039 (tension — polymer-matrix laminate)'
+                    : matrixIsMetal ? 'ASTM D3552 (metal-matrix composite tension) / ASTM E8'
+                    : 'ASTM C1359 (tension — continuous-fibre ceramic-matrix)';
+  const densityStd = matrixIsPolymer ? 'ASTM D792 / D1505' : matrixIsMetal ? 'ASTM B311 (or Archimedes, ASTM B962)' : 'ASTM C373 / C20';
+  const vfStd = matrixIsPolymer ? 'ASTM D3171 (matrix burn-off / digestion)' : 'Areal image analysis (ASTM E562 point-count analogue)';
+  const anyConductive = reinfList.some(x=>x.mat.elec==='C') || m.elec==='C';
+  const elecStd = anyConductive ? 'ASTM B193 (metallic resistivity)' : 'ASTM D257 (insulation resistance)';
+  const constituentRows = [{name:m.name+' (matrix)', astm:m.astm}].concat(reinfList.map(x=>({name:x.mat.name, astm:x.mat.astm})));
+  document.getElementById('standards-card').innerHTML = `
+    <div class="std-row"><span class="std-prop">Tensile modulus &amp; strength</span><span class="std-code">${tensileStd}</span></div>
+    <div class="std-row"><span class="std-prop">Density</span><span class="std-code">${densityStd}</span></div>
+    <div class="std-row"><span class="std-prop">Reinforcement volume fraction</span><span class="std-code">${vfStd}</span></div>
+    <div class="std-row"><span class="std-prop">Thermal expansion (CTE)</span><span class="std-code">ASTM E831 (TMA) · E228 (dilatometry)</span></div>
+    <div class="std-row"><span class="std-prop">Thermal conductivity</span><span class="std-code">ASTM E1461 (laser flash)</span></div>
+    <div class="std-row"><span class="std-prop">Electrical behaviour</span><span class="std-code">${elecStd}</span></div>
+    ${constituentRows.map(c=>`<div class="std-row"><span class="std-prop">${c.name} — constituent level</span><span class="std-code">${c.astm}</span></div>`).join('')}
+  `;
+}
+
+function checkFeasibility(m, hardener, reinfList){
+  const reasons = [];
+  let ok = true;
+  const matProcT = hardener ? Math.max(m.procT||0, hardener.postCure) : m.procT;
+  if(!m.matrix){ ok=false; reasons.push(`${m.name} cannot serve as a continuous binding (matrix) phase.`); }
+  reinfList.forEach(x=>{
+    const r = x.mat;
+    if(r.id===m.id){ ok=false; reasons.push(`${m.name} paired with itself is a single homogeneous material, not a composite.`); }
+    if(!r.reinf){ ok=false; reasons.push(`${r.name} is not typically used as a load-bearing reinforcement phase.`); }
+    if(matProcT!=null && r.maxT < matProcT){
+      ok=false;
+      reasons.push(`${r.name} degrades or melts around ${r.maxT}°C, below the ~${matProcT}°C needed to process ${m.name}${hardener?` with ${hardener.name}`:''}. Processing would destroy that reinforcement before the matrix could form around it.`);
+    }
+  });
+  const dupIds = reinfList.map(x=>x.mat.id).filter((id,i,arr)=>arr.indexOf(id)!==i);
+  if(dupIds.length){ ok=false; reasons.push(`The same reinforcement is selected more than once — each row should be a distinct material.`); }
+  if(ok){
+    reinfList.forEach(x=>{
+      const r = x.mat;
+      if((m.cat==='metal'||m.cat==='ceramic') && r.cat==='synfiber' && r.maxT<600){
+        reasons.push(`Note: molten/sintered ${m.name} runs far hotter than ${r.name}'s stable range — this pairing needs a low-temperature infiltration or coating route to succeed in practice.`);
+      }
+    });
+    if(m.moist==='H' && reinfList.some(x=>x.mat.moist==='H')){
+      reasons.push(`Both the matrix and at least one reinforcement absorb moisture readily — expect swelling and property loss in humid service without a protective coating.`);
+    }
+    const totalVf = reinfList.reduce((s,x)=>s+x.vf,0);
+    if(totalVf>0.65){
+      reasons.push(`Combined reinforcement volume fraction of ${Math.round(totalVf*100)}% is close to realistic packing limits (~70–74% max for circular fibres) — expect voids or incomplete wet-out at the high end.`);
+    }
+  }
+  return {ok, reasons};
+}
+
+function fmt(n, d=2){ return Number(n).toLocaleString(undefined,{maximumFractionDigits:d}); }
+
+function runForge(){
+  const m = byId(document.getElementById('sel-matrix').value);
+  const hardener = hardenerChoice ? HARDENERS[m.id].find(h=>h.id===hardenerChoice) : null;
+  const reinfList = reinforcements.map(row=>({mat:byId(row.id), vf:row.vf/100, orientation:row.orientation}));
+
+  const feas = checkFeasibility(m,hardener,reinfList);
+  const verdictBox = document.getElementById('verdict-box');
+  const comboText = reinfList.map(x=>`${x.mat.name} (${Math.round(x.vf*100)}%, ${x.orientation})`).join(' + ');
+  document.getElementById('combo-label').textContent = `${m.name}${hardener?' / '+hardener.name.split(' — ')[0]:''} matrix reinforced with ${comboText}`;
+
+  if(!feas.ok){
+    verdictBox.innerHTML = `<div class="verdict bad"><b>✕ Not a viable composite.</b><br>${feas.reasons.join('<br>')}</div>`;
+    document.getElementById('prop-table').innerHTML='';
+    document.getElementById('explain-box').innerHTML='';
+    document.getElementById('standards-card').innerHTML='<span style="color:var(--bone-dim)">No standards to show — select a viable pair first.</span>';
+    document.getElementById('behavior-out').innerHTML='';
+    document.getElementById('cost-explain').innerHTML='';
+    document.getElementById('cost-lo-label').textContent='';
+    document.getElementById('cost-hi-label').textContent='';
+    document.getElementById('cost-bar-fill').style.width='0%';
+    updateForgeVisual(null,null,null);
+    renderLedger();
+    return;
+  }
+  verdictBox.innerHTML = `<div class="verdict">✓ Formable composite.${feas.reasons.length?'<br>'+feas.reasons.join('<br>'):''}</div>`;
+
+  const c = computeComposite(m,hardener,reinfList);
+
+  document.getElementById('prop-table').innerHTML = `
+    <tr><td>Density</td><td>${fmt(c.rho)}<span class="unit">g/cm³</span></td></tr>
+    <tr><td>Effective tensile modulus</td><td>${fmt(c.E_eff)}<span class="unit">GPa</span></td></tr>
+    <tr><td>Tensile strength</td><td>${fmt(c.ts,0)}<span class="unit">MPa</span></td></tr>
+    <tr><td>Failure mode</td><td style="text-align:left;font-size:12.5px;">${c.failureMode}</td></tr>
+    <tr><td>Thermal conductivity</td><td>${fmt(c.k_eff)}<span class="unit">W/m·K</span></td></tr>
+    <tr><td>CTE — longitudinal / transverse</td><td>${fmt(c.cte1,1)} / ${fmt(c.cte2,1)}<span class="unit">×10⁻⁶/K</span></td></tr>
+    <tr><td>Maximum service temperature</td><td>${fmt(c.maxTemp,0)}<span class="unit">°C</span></td></tr>
+    <tr><td>Electrical behaviour</td><td style="text-align:left;font-size:12.5px;">${c.electrical}</td></tr>
+  `;
+
+  const strainList = reinfList.map(x=>`${x.mat.name} ${fmt(x.mat.elong,1)}%`).join(', ');
+  const limiter = c.maxTemp===c.matMaxT ? `${m.name}${hardener?' (as cured)':''}` : reinfList.find(x=>x.mat.maxT===c.maxTemp)?.mat.name || m.name;
+  document.getElementById('explain-box').innerHTML = `
+    <b>How it got these properties.</b><br>
+    Density follows the <b>rule of mixtures</b>: <span class="formula">ρc = Vm·ρm + ΣVfi·ρi</span> — each phase, including every reinforcement row, contributes in direct proportion to how much of it is present.<br><br>
+    Stiffness blends E₁ = ${fmt(c.E1)} GPa (Voigt, all phases straining together) and E₂ = ${fmt(c.E2)} GPa (nested Halpin–Tsai across every reinforcement in turn), weighted by each row's own architecture and share of total reinforcement volume.<br><br>
+    Strength uses ${c.strengthModel}<br>
+    Failure strains in play: matrix ${fmt(m.elong,1)}%, reinforcements — ${strainList}. This determines which governs: <b>${c.failureMode}</b>.<br><br>
+    Thermal conductivity blends parallel, series, and nested-Halpin-Tsai bounds per row's architecture. CTE uses <b>Schapery's equations</b> generalized across all phases — longitudinal is the exact modulus-weighted form, transverse is Poisson-corrected using ν₁₂ = ${fmt(c.nu12,2)}.<br><br>
+    ${hardener ? `The <b>${hardener.name}</b> curing system shifts the matrix's usable temperature by ${c.matMaxT-m.maxT>=0?'+':''}${fmt(c.matMaxT-m.maxT,0)}°C versus neat resin, and sets the real processing temperature at ${fmt(c.matProcT,0)}°C.<br><br>` : ''}
+    Maximum service temperature is capped by whichever constituent degrades first — here, <b>${limiter}</b> at ${fmt(c.maxTemp,0)}°C.
+  `;
+  buildStandardsCard(m,reinfList[0]?.mat,reinfList);
+
+  document.getElementById('cost-lo-label').textContent = `${inr(c.costLo)} / kg`;
+  document.getElementById('cost-hi-label').textContent = `${inr(c.costHi)} / kg`;
+  document.getElementById('cost-bar-fill').style.width='100%';
+  const massBreak = [`${fmt(c.massM*100,0)}% ${m.name}`].concat(c.massRows.map(x=>`${fmt(x.mass*100,0)}% ${x.mat.name}`)).join(', ');
+  const anyExpensive = reinfList.some(x=>x.mat.costLo>50);
+  document.getElementById('cost-explain').innerHTML = `
+    By mass, this build is roughly ${massBreak}${hardener?` (plus a small hardener addition, folded into the matrix cost)`:''}.
+    Raw material cost is a volume-to-mass-weighted average across every constituent's market price, plus a processing markup
+    (roughly +15% for simple casting/lamination up to +60% for precision layup, autoclave cure, or infiltration routes).
+    ${anyExpensive?`<br><br><b>Heads up:</b> one or more of your reinforcements sits at the very top of the cost ledger — it typically only makes sense where its extreme performance justifies the price.`:''}
+  `;
+
+  document.getElementById('canvas-tag').textContent = `${m.name} + ${comboText}`;
+  updateForgeVisual(m,hardener,reinfList);
+  runBehavior(m,reinfList);
+  renderLedger();
+}
+
+/* =====================================================================
+   BEHAVIOR SIMULATOR
+===================================================================== */
+const SENS = {L:'low',M:'moderate',H:'high'};
+const CHEMWORD = {P:'poor',F:'fair',G:'good',E:'excellent'};
+function runBehavior(m,reinfList){
+  const s = activeScenario;
+  const rNames = reinfList.map(x=>x.mat.name).join(' + ');
+  let text = '';
+  if(s==='heat'){
+    const weakest = reinfList.reduce((min,x)=>x.mat.maxT<min.mat.maxT?x:min, reinfList[0]);
+    const cap = Math.min(m.maxT, weakest.mat.maxT);
+    if(m.maxT < weakest.mat.maxT){
+      text = `The matrix is the weak link here. ${m.name} softens or degrades near ${m.maxT}°C — well before ${rNames} (stable to at least ${weakest.mat.maxT}°C) becomes a concern. Above that ceiling, expect the matrix to lose stiffness first, followed by reinforcement/matrix debonding and gradual loss of load transfer. Treat ${fmt(cap,0)}°C as a hard practical limit for sustained service.`;
+    } else {
+      text = `Unusually, a reinforcement is the limiting factor: ${weakest.mat.name} degrades near ${weakest.mat.maxT}°C, sooner than the ${m.name} matrix (stable to ${m.maxT}°C). Past that point that reinforcement loses strength first, and the composite behaves closer to the matrix reinforced by whatever's left.`;
+    }
+  } else if(s==='cold'){
+    text = `Most matrices stiffen and become more brittle as temperature drops — ${m.ductile?`${m.name} is normally ductile, so cold exposure will measurably raise its brittle-fracture risk, especially under impact.`:`${m.name} is already fairly brittle, and cold service will amplify that tendency further.`} The reinforcement phases (${rNames}) are largely unaffected by cold, so failures in cryogenic service typically initiate in the matrix or at a reinforcement/matrix interface, not in the reinforcement itself.`;
+  } else if(s==='moisture'){
+    const worstReinf = reinfList.reduce((w,x)=> (x.mat.moist==='H'?2:x.mat.moist==='M'?1:0) > (w.mat.moist==='H'?2:w.mat.moist==='M'?1:0) ? x : w, reinfList[0]);
+    const worst = (m.moist==='H'||worstReinf.mat.moist==='H') ? 'high' : (m.moist==='M'||worstReinf.mat.moist==='M') ? 'moderate' : 'low';
+    text = `Combined moisture sensitivity here is <b>${worst}</b>. ${m.name} has ${SENS[m.moist]} moisture uptake${m.moist!=='L'?' — expect swelling, plasticisation, and a drop in glass transition temperature with prolonged wet exposure':''}. The most moisture-sensitive reinforcement is ${worstReinf.mat.name} (${SENS[worstReinf.mat.moist]})${worstReinf.mat.moist==='H'?', and as a natural fibre it can also be vulnerable to fungal attack in persistently damp conditions':''}. ${worst==='low'?'This combination should hold up well in humid or wet service.':'A moisture barrier coating or gelcoat is strongly advisable for anything beyond occasional dampness.'}`;
+  } else if(s==='uv'){
+    const worstUv = reinfList.reduce((w,x)=> (x.mat.uv==='H'?2:x.mat.uv==='M'?1:0) > (w.mat.uv==='H'?2:w.mat.uv==='M'?1:0) ? x : w, reinfList[0]);
+    text = `${m.name} has ${SENS[m.uv]} UV sensitivity${m.uv!=='L'?' — expect surface chalking, yellowing, or embrittlement with unprotected outdoor exposure over months to years':' and should hold its properties well in direct sunlight'}. Of the reinforcements, ${worstUv.mat.name} is the most UV-sensitive (${SENS[worstUv.mat.uv]})${worstUv.mat.uv==='H'?', though in a composite it is normally shielded by the matrix, so surface protection of the matrix is what really matters':''}. ${(m.uv==='H'||worstUv.mat.uv==='H')?'A UV-stable topcoat or pigment is recommended for long-term outdoor parts.':''}`;
+  } else if(s==='fatigue'){
+    const anyUni = reinfList.some(x=>x.orientation==='uni');
+    const bestTough = reinfList.some(x=>x.mat.tough==='H');
+    text = `${anyUni?'With at least one row loaded along its fibre direction, this' : 'In this off-axis or randomly oriented layup, this'} composite's fatigue life is governed mostly by the matrix. ${m.name} is ${m.ductile?'ductile, which tends to blunt crack tips and delay fatigue failure':'relatively brittle, so microcracks can initiate early in cyclic loading and accumulate steadily even at moderate stress'}. ${bestTough?`${rNames} includes at least one high-toughness reinforcement, which helps arrest cracks before they propagate.`:`${rNames} is fairly brittle in its own right, offering little crack-arresting benefit.`} Expect the practical fatigue limit to sit well below the static tensile strength shown above — a common rule of thumb is 25-50% of static strength for polymer-matrix composites under long-term cyclic load.`;
+  } else if(s==='impact'){
+    const bestTough = reinfList.reduce((b,x)=> (x.mat.tough==='H'?2:x.mat.tough==='M'?1:0) > (b.mat.tough==='H'?2:b.mat.tough==='M'?1:0) ? x : b, reinfList[0]);
+    text = `Impact resistance depends on how much energy the composite can absorb before fracturing. ${bestTough.mat.tough==='H'?`${bestTough.mat.name} is an excellent energy absorber under sudden load — this is exactly the kind of reinforcement used in impact- and ballistic-rated composites.`:bestTough.mat.tough==='M'?`${bestTough.mat.name} offers moderate impact tolerance, the best of this stack.`:`${rNames} is stiff but brittle overall, and tends to fail abruptly rather than absorb energy gracefully under sudden impact.`} ${m.ductile?`The ${m.name} matrix is ductile and will yield locally to help dissipate impact energy.`:`The ${m.name} matrix is brittle and offers little energy absorption of its own, so most impact tolerance here comes from the reinforcement stack.`}`;
+  } else if(s==='chemical'){
+    const worstChem = reinfList.reduce((w,x)=> (x.mat.chem==='P'?0:x.mat.chem==='F'?1:x.mat.chem==='G'?2:3) < (w.mat.chem==='P'?0:w.mat.chem==='F'?1:w.mat.chem==='G'?2:3) ? x : w, reinfList[0]);
+    text = `Chemical resistance is set by the weakest constituent in whatever specific environment is expected. ${m.name} has ${CHEMWORD[m.chem]} chemical resistance, and the weakest reinforcement, ${worstChem.mat.name}, has ${CHEMWORD[worstChem.mat.chem]} resistance. ${(m.chem==='P'||worstChem.mat.chem==='P')?'With a "poor" rating in the mix, expect noticeable attack, swelling, or degradation on contact with solvents, acids, or oils — a barrier layer or different matrix choice is worth considering for a corrosive-service part.':'This combination should tolerate everyday solvent, fuel, or mild-acid exposure reasonably well, though always spot-check against the specific chemical in question.'}`;
+  }
+  document.getElementById('behavior-out').innerHTML = `<span class="scenario-label">${SCENARIOS.find(x=>x.id===s).label}</span>${text}`;
+}
+
+/* =====================================================================
+   THREE.JS — HERO
+===================================================================== */
+let heroScene, heroCam, heroRenderer, heroGroup;
+function initHero(){
+  const canvas = document.getElementById('hero-canvas');
+  heroScene = new THREE.Scene();
+  heroCam = new THREE.PerspectiveCamera(50, window.innerWidth/window.innerHeight, 0.1, 1000);
+  heroCam.position.set(0,0,26);
+  heroRenderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true});
+  heroRenderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+  heroRenderer.setSize(window.innerWidth, window.innerHeight);
+
+  heroGroup = new THREE.Group();
+  heroScene.add(heroGroup);
+
+  const colors = [0x4F9C86, 0xE8A23D, 0x6C90AD];
+  // lattice of nodes + connecting edges, like a crystal / molecular structure
+  const nodeCount = 90;
+  const positions = [];
+  const nodeGeo = new THREE.SphereGeometry(0.16, 12, 12);
+  for(let i=0;i<nodeCount;i++){
+    const theta = Math.random()*Math.PI*2;
+    const phi = Math.acos(2*Math.random()-1);
+    const rad = 9 + Math.random()*6;
+    const x = rad*Math.sin(phi)*Math.cos(theta);
+    const y = rad*Math.sin(phi)*Math.sin(theta)*0.6;
+    const z = rad*Math.cos(phi);
+    positions.push(new THREE.Vector3(x,y,z));
+    const mat = new THREE.MeshBasicMaterial({color: colors[i%3], transparent:true, opacity:0.85});
+    const mesh = new THREE.Mesh(nodeGeo, mat);
+    mesh.position.copy(positions[i]);
+    heroGroup.add(mesh);
+  }
+  // connect nearby nodes with thin lines for a lattice look
+  const lineMat = new THREE.LineBasicMaterial({color:0x2A2E33, transparent:true, opacity:0.5});
+  const linePts = [];
+  for(let i=0;i<positions.length;i++){
+    for(let j=i+1;j<positions.length;j++){
+      if(positions[i].distanceTo(positions[j])<4.2){
+        linePts.push(positions[i], positions[j]);
+      }
+    }
+  }
+  const lineGeo = new THREE.BufferGeometry().setFromPoints(linePts);
+  heroGroup.add(new THREE.LineSegments(lineGeo, lineMat));
+
+  // orbiting rings (esoteric flourish)
+  for(let i=0;i<3;i++){
+    const ringGeo = new THREE.TorusGeometry(11+i*2.2, 0.02, 8, 100);
+    const ringMat = new THREE.MeshBasicMaterial({color: colors[i], transparent:true, opacity:0.35});
+    const ring = new THREE.Mesh(ringGeo, ringMat);
+    ring.rotation.x = Math.PI/2 + i*0.5;
+    ring.rotation.y = i*0.7;
+    heroGroup.add(ring);
+  }
+
+  window.addEventListener('resize', ()=>{
+    heroCam.aspect = window.innerWidth/window.innerHeight;
+    heroCam.updateProjectionMatrix();
+    heroRenderer.setSize(window.innerWidth, window.innerHeight);
+  });
+  animateHero();
+}
+function animateHero(){
+  requestAnimationFrame(animateHero);
+  heroGroup.rotation.y += 0.0012;
+  heroGroup.rotation.x = Math.sin(Date.now()*0.0001)*0.15;
+  heroRenderer.render(heroScene, heroCam);
+}
+
+/* =====================================================================
+   THREE.JS — FORGE MICROSTRUCTURE VISUAL
+===================================================================== */
+let forgeScene, forgeCam, forgeRenderer, forgeGroup, forgeMatrixMesh;
+let dragging=false, lastX=0, lastY=0, rotY=0.4, rotX=-0.25;
+function initForge(){
+  const canvas = document.getElementById('forge-canvas');
+  const wrap = document.getElementById('forge-canvas-wrap');
+  forgeScene = new THREE.Scene();
+  forgeCam = new THREE.PerspectiveCamera(45, wrap.clientWidth/wrap.clientHeight, 0.1, 100);
+  forgeCam.position.set(0,0,11);
+  forgeRenderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true});
+  forgeRenderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+  forgeRenderer.setSize(wrap.clientWidth, wrap.clientHeight);
+
+  const light1 = new THREE.DirectionalLight(0xffffff,1.1); light1.position.set(4,6,8); forgeScene.add(light1);
+  forgeScene.add(new THREE.AmbientLight(0x556677,0.9));
+
+  forgeGroup = new THREE.Group();
+  forgeScene.add(forgeGroup);
+
+  canvas.addEventListener('mousedown', e=>{dragging=true;lastX=e.clientX;lastY=e.clientY;});
+  window.addEventListener('mouseup', ()=>dragging=false);
+  window.addEventListener('mousemove', e=>{
+    if(!dragging) return;
+    rotY += (e.clientX-lastX)*0.006;
+    rotX += (e.clientY-lastY)*0.006;
+    lastX=e.clientX; lastY=e.clientY;
+  });
+  canvas.addEventListener('touchstart', e=>{dragging=true;lastX=e.touches[0].clientX;lastY=e.touches[0].clientY;},{passive:true});
+  window.addEventListener('touchend', ()=>dragging=false);
+  window.addEventListener('touchmove', e=>{
+    if(!dragging) return;
+    rotY += (e.touches[0].clientX-lastX)*0.006;
+    rotX += (e.touches[0].clientY-lastY)*0.006;
+    lastX=e.touches[0].clientX; lastY=e.touches[0].clientY;
+  },{passive:true});
+
+  window.addEventListener('resize', ()=>{
+    forgeCam.aspect = wrap.clientWidth/wrap.clientHeight;
+    forgeCam.updateProjectionMatrix();
+    forgeRenderer.setSize(wrap.clientWidth, wrap.clientHeight);
+  });
+  animateForge();
+}
+function addReinforcementLayer(mat, vf, orientation, boxSize, layerIndex, totalLayers){
+  const reinfColor = mat.color || '#E8A23D';
+  const metallic = new Set(['element','metal']);
+  const reinfShininess = metallic.has(mat.cat) ? 110 : (mat.cat==='ceramic'||mat.cat==='filler') ? 60 : (mat.cat==='synfiber'||mat.cat==='natfiber') ? 25 : 15;
+  const reinfMat = new THREE.MeshPhongMaterial({color:reinfColor, shininess:reinfShininess});
+  const Vfc = Math.min(Math.max(vf,0.02),0.74); // physical square-packing caps out near pi/4
+  const layerShift = totalLayers>1 ? (layerIndex/totalLayers - 0.5) * boxSize*0.5 : 0;
+  let tagSuffix = '';
+
+  if(orientation==='particulate'){
+    const rp = 0.14;
+    const boxVol = Math.pow(boxSize*0.9,3);
+    let n = Math.round((Vfc*boxVol)/((4/3)*Math.PI*Math.pow(rp,3)));
+    n = Math.min(n, 220); // render cap for performance, lower per-layer when stacking multiple reinforcements
+    const geo = new THREE.SphereGeometry(rp,10,10);
+    const placed = [];
+    for(let i=0;i<n;i++){
+      let pos, tries=0;
+      do{
+        pos = new THREE.Vector3((Math.random()-0.5)*boxSize*0.86,(Math.random()-0.5)*boxSize*0.86,(Math.random()-0.5)*boxSize*0.86);
+        tries++;
+      } while(tries<6 && placed.some(p=>p.distanceTo(pos) < rp*1.9));
+      placed.push(pos);
+      const mesh = new THREE.Mesh(geo, reinfMat);
+      mesh.position.copy(pos);
+      forgeGroup.add(mesh);
+    }
+    tagSuffix = `${mat.name}: ${n} particles @ ${Math.round(Vfc*100)}%`;
+  } else {
+    const rf = 0.07;
+    const spacing = (2*rf) * Math.sqrt(Math.PI/(4*Vfc));
+    const nSide = Math.min(13, Math.max(2, Math.floor((boxSize*0.8)/spacing)));
+    const actualVf = (nSide*nSide*Math.PI*rf*rf) / Math.pow(nSide*spacing,2);
+    const span = (nSide-1)*spacing;
+
+    if(orientation==='uni'){
+      const geo = new THREE.CylinderGeometry(rf,rf, boxSize*0.92, 8);
+      for(let i=0;i<nSide;i++){
+        for(let j=0;j<nSide;j++){
+          const mesh = new THREE.Mesh(geo, reinfMat);
+          mesh.rotation.x = Math.PI/2;
+          mesh.position.set(i*spacing-span/2, j*spacing-span/2, layerShift);
+          forgeGroup.add(mesh);
+        }
+      }
+      tagSuffix = `${mat.name}: square-packed, spacing ${spacing.toFixed(2)}, areal Vf ≈ ${Math.round(actualVf*100)}%`;
+    } else if(orientation==='woven'){
+      // Real plain weave: warp rods run full-length along Y, weft rods run
+      // full-length along X, crossing at every grid line and alternating
+      // over/under. Multiple plies are stacked through the box depth so the
+      // reinforcement fills the whole cube rather than a single sparse layer.
+      const rodLen = Math.min(nSide*spacing, boxSize*0.92);
+      const warpGeo = new THREE.CylinderGeometry(rf,rf, rodLen, 8);
+      const weftGeo = new THREE.CylinderGeometry(rf,rf, rodLen, 8);
+      const plyPitch = spacing*1.5;
+      const plyCount = Math.min(5, Math.max(1, Math.floor((boxSize*0.75)/plyPitch)));
+      for(let p=0;p<plyCount;p++){
+        const zPly = layerShift + (p-(plyCount-1)/2)*plyPitch;
+        for(let i=0;i<nSide;i++){
+          const warp = new THREE.Mesh(warpGeo, reinfMat); // runs along Y (default cylinder axis)
+          warp.position.set(i*spacing-span/2, 0, zPly + (i%2===0? rf*1.15 : -rf*1.15));
+          forgeGroup.add(warp);
+        }
+        for(let j=0;j<nSide;j++){
+          const weft = new THREE.Mesh(weftGeo, reinfMat);
+          weft.rotation.z = Math.PI/2; // runs along X
+          weft.position.set(0, j*spacing-span/2, zPly + (j%2===0? -rf*1.15 : rf*1.15));
+          forgeGroup.add(weft);
+        }
+      }
+      tagSuffix = `${mat.name}: plain-weave, ${plyCount} plies, spacing ${spacing.toFixed(2)}, areal Vf ≈ ${Math.round(actualVf*100)}%`;
+    } else { // random chopped mat — planar-random (2D), matching how a chopped-strand mat is laid
+      const count = nSide*nSide;
+      const geo = new THREE.CylinderGeometry(rf*0.95,rf*0.95, boxSize*0.34, 6);
+      for(let i=0;i<count;i++){
+        const mesh = new THREE.Mesh(geo, reinfMat);
+        mesh.position.set((Math.random()-0.5)*boxSize*0.86,(Math.random()-0.5)*boxSize*0.86,layerShift+(Math.random()-0.5)*boxSize*0.4);
+        mesh.rotation.z = Math.random()*Math.PI*2;
+        mesh.rotation.x = Math.PI/2 + (Math.random()-0.5)*0.35;
+        forgeGroup.add(mesh);
+      }
+      tagSuffix = `${mat.name}: ${count} random chopped, areal Vf ≈ ${Math.round(actualVf*100)}%`;
+    }
+  }
+  return tagSuffix;
+}
+
+function updateForgeVisual(m,hardener,reinfList){
+  if(!forgeGroup) return; // 3D scene unavailable (e.g. Three.js failed to load) — rest of the Forge still works
+  while(forgeGroup.children.length) forgeGroup.remove(forgeGroup.children[0]);
+  if(!m||!reinfList||!reinfList.length) return;
+
+  const boxSize = 5;
+  const matColor = m.color || '#556677';
+  const metallic = new Set(['element','metal']);
+  const matOpacity = metallic.has(m.cat) ? 0.38 : (m.cat==='ceramic' ? 0.3 : 0.2);
+  const matShininess = metallic.has(m.cat) ? 110 : (m.cat==='ceramic' ? 40 : 12);
+
+  const box = new THREE.Mesh(
+    new THREE.BoxGeometry(boxSize,boxSize,boxSize),
+    new THREE.MeshPhongMaterial({color:matColor, transparent:true, opacity:matOpacity, shininess:matShininess, depthWrite:false})
+  );
+  forgeGroup.add(box);
+  const edges = new THREE.LineSegments(new THREE.EdgesGeometry(box.geometry), new THREE.LineBasicMaterial({color:matColor}));
+  forgeGroup.add(edges);
+
+  const tagParts = reinfList.map((x,i)=> addReinforcementLayer(x.mat, x.vf, x.orientation, boxSize, i, reinfList.length));
+  document.getElementById('canvas-tag').textContent += ' · ' + tagParts.join(' · ');
+}
+
+function animateForge(){
+  requestAnimationFrame(animateForge);
+  forgeGroup.rotation.y = rotY;
+  forgeGroup.rotation.x = rotX;
+  if(!dragging){ rotY += 0.0022; }
+  forgeRenderer.render(forgeScene, forgeCam);
+}
+
+/* =====================================================================
+   INIT
+===================================================================== */
+renderTabs();
+renderAtlas();
+renderLedger();
+try{ initHero(); }catch(e){ console.error('Hero 3D failed to initialize:', e); }
+try{ initForge(); }catch(e){ console.error('Forge 3D failed to initialize:', e); }
+runForge();
+</script>
+</body>
+</html>
